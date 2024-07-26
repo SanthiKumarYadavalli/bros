@@ -48,8 +48,6 @@ if name:
 
 # DISPLAYING DATA
 if bro_data is not None:
-    if bro_data['DOB'].month == today.month and bro_data['DOB'].day == today.day:  # BIRTHDAY BRO
-        st.balloons()
     st.subheader("Profile", divider='rainbow')
     col1, col2 = st.columns(2, gap="large", vertical_alignment="center")
     bro_data.name = ""  # hide table header
@@ -67,10 +65,13 @@ if bro_data is not None:
         st.subheader(bro_data['NAME'], divider="rainbow")
         cols = ['ID', 'GENDER', 'DOB', 'BRANCH', 'FATHER',
                 'CASTE', 'MANDAL', 'DISTRICT', 'SCHOOL', 'PHONE']
-        st.table(bro_data[cols])
+        st.table(bro_data[cols].astype(str))
         if bro_data.PHONE != 0:
             st.link_button(":green[Whatsapp]",
                            f"https://wa.me/+91{bro_data.PHONE}")
+
+    if bro_data['DOB'].month == today.month and bro_data['DOB'].day == today.day:  # BIRTHDAY BRO
+        st.balloons()
 
 
 tab1, tab2 = st.tabs(["Birthday's", "Facts",])
