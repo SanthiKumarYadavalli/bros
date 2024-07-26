@@ -16,6 +16,17 @@ def get_data():
     data['DOB'] = pd.to_datetime(data['DOB'], format='%d/%m/%Y')
     return data
 
+# GET image
+
+
+@st.cache_data
+def get_image(ID):
+    res = requests.get(
+        f"https://raw.githubusercontent.com/pythonista69/r20/main/images/{ID}.jpg")
+    if res.ok:
+        return res.content
+    return None
+
 
 # GET birthday's info
 def get_birthdays(data, date):
@@ -53,10 +64,9 @@ if bro_data is not None:
     bro_data.name = ""  # hide table header
     # image col
     with col1:
-        res = requests.get(
-            f"https://raw.githubusercontent.com/pythonista69/r20/main/images/{bro_data['ID']}.jpg")
-        if res.ok:
-            st.image(res.content)
+        img = get_image(bro_data['ID'])
+        if img:
+            st.image(img)
         else:
             st.image(
                 "https://raw.githubusercontent.com/pythonista69/r20/main/images/not_found.jpg")
