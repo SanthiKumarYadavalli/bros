@@ -3,3 +3,4 @@ venv/
 test.ipynb
 __pycache__/
 updated.csv
+.vscode/
