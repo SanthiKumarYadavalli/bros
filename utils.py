@@ -35,18 +35,6 @@ def get_birthdays(data, date):
     return birthdays
 
 
-def get_flame_num(s1, s2):
-    c1 = Counter(s1.lower())
-    c2 = Counter(s2.lower())
-    num = sum([abs(c1[x] - c2[x]) for x in ascii_lowercase]) - 1
-    arr = [0, 1, 2, 3, 4, 5]
-    i = 0
-    while len(arr) > 1:
-        i = (i + num) % len(arr)
-        arr.pop(i)
-    return arr[0]
-
-
 flame_map = {
     0: "Friends",
     1: "Lovers",
@@ -58,8 +46,15 @@ flame_map = {
 
 
 def get_flame_text(s1, s2):
-    num = get_flame_num(s1, s2)
-    return num, flame_map[num]
+    c1 = Counter(s1.lower())
+    c2 = Counter(s2.lower())
+    num = sum([abs(c1[x] - c2[x]) for x in ascii_lowercase]) - 1
+    arr = [0, 1, 2, 3, 4, 5]
+    i = 0
+    while len(arr) > 1:
+        i = (i + num) % len(arr)
+        arr.pop(i)
+    return arr[0], flame_map[arr[0]]
 
 
 def get_flame_bros(bro):

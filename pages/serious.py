@@ -34,8 +34,10 @@ with tab1:
             st.image(utils.get_image(bro_data['ID']))
 
         with col2:  # details col
-            cols = ['ID', 'GENDER', 'DOB', 'BRANCH', 'FATHER',
-                    'CASTE', 'MANDAL', 'DISTRICT', 'SCHOOL', 'PHONE']
+            cols = [
+                'ID', 'GENDER', 'DOB', 'BRANCH', 'FATHER', 'MOTHER', 'CASTE', 
+                'MANDAL', 'DISTRICT', 'SCHOOL', 'PHONE', 'Parent', 
+                'BLOOD GROUP', 'ADDRESS', 'CGPA']
             display_df = bro_data[cols]
             display_df["DOB"] = display_df["DOB"].strftime("%d %B %Y")
             st.table(display_df)
