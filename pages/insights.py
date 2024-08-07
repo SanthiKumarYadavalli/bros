@@ -1,6 +1,6 @@
 import streamlit as st
+import plotly.express as px
 import utils
-import datetime
 
 data = utils.get_data()
 st.subheader("Longest Name")
@@ -18,7 +18,8 @@ st.info(data.iloc[data["DOB"].idxmax()]["NAME"])
 st.divider()
 
 st.subheader("Birthday count")
-frmt = {"Year": "%Y", "Month": "%b", "Day": "%a", "Year-Month": "%Y-%b"}
-how = st.selectbox("By", frmt.keys())
-st.bar_chart(data["DOB"].dt.strftime(frmt[how]).value_counts())
-
+birthday_frame = utils.get_birthday_frame(data["DOB"])
+col = st.selectbox("By", birthday_frame.columns)
+df = birthday_frame[col].value_counts().sort_index()
+color = df.index.str.slice(0, 4) if col == "Year-Month" else None
+st.plotly_chart(px.bar(df, color=color))

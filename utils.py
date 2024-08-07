@@ -1,5 +1,6 @@
 from collections import Counter
 from string import ascii_lowercase
+from itertools import product
 import datetime
 import requests
 import streamlit as st
@@ -68,3 +69,28 @@ def get_flame_bros(bro):
     them['flame'] = them['flame'].astype("category")
     them['flame'] = them['flame'].cat.set_categories(flame_map.values())
     return them
+
+
+@st.cache_data
+def get_birthday_frame(dob):
+    frame = pd.DataFrame()
+    months = [
+        "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+    ]
+    days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+    years = sorted(dob.dt.strftime("%Y").unique())
+    order = {
+        "Month": months,
+        "Day": days,
+        "Year-Month": ["-".join(p) for p in product(years, months)]
+    }
+    frame["Year"] = dob.dt.strftime("%Y")
+    frame["Month"] = dob.dt.strftime("%b").astype('category')
+    frame["Day"] = dob.dt.strftime("%a").astype('category')
+    frame["Year-Month"] = dob.dt.strftime("%Y-%b").astype('category')
+    
+    for c in order:
+        frame[c] = frame[c].cat.set_categories(order[c], ordered=True)
+    
+    return frame
