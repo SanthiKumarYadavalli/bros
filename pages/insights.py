@@ -20,6 +20,6 @@ st.divider()
 st.subheader("Birthday count")
 birthday_frame = utils.get_birthday_frame(data["DOB"])
 col = st.selectbox("By", birthday_frame.columns)
-df = birthday_frame[col].value_counts().sort_index()
+df = birthday_frame[col].value_counts()
 color = df.index.str.slice(0, 4) if col == "Year-Month" else None
-st.plotly_chart(px.bar(df, color=color))
+st.bar_chart(df)
