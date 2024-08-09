@@ -10,9 +10,8 @@ import pandas as pd
 from dotenv import load_dotenv
 
 load_dotenv()
-DATA_REPO = os.environ.get("DATA_REPO")
-DATA_URL = f"https://raw.githubusercontent.com/{DATA_REPO}/main/the_data.csv"
-IMAGE_URL = f"https://raw.githubusercontent.com/{DATA_REPO}/main/images/"
+DATA_URL = os.getenv("DATA_URL")
+IMAGE_URL = os.getenv("IMAGE_URL")
 today = datetime.date.today()
 
 
