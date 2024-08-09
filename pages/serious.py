@@ -1,10 +1,6 @@
 import datetime
 import streamlit as st
 import utils
-from static.styles import CSS
-
-# Extra styling
-st.markdown(CSS, unsafe_allow_html=True)
 
 data = utils.get_data()
 today = datetime.date.today()

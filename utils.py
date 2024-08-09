@@ -2,19 +2,24 @@ from collections import Counter
 from string import ascii_lowercase
 from itertools import product
 import datetime
+import os
 import requests
 import streamlit as st
 import numpy as np
 import pandas as pd
+from dotenv import load_dotenv
 
-IMAGE_URL = "https://raw.githubusercontent.com/pythonista69/r20/main/images/"
+load_dotenv()
+DATA_REPO = os.environ.get("DATA_REPO")
+DATA_URL = f"https://raw.githubusercontent.com/{DATA_REPO}/main/the_data.csv"
+IMAGE_URL = f"https://raw.githubusercontent.com/{DATA_REPO}/main/images/"
 today = datetime.date.today()
 
 
 # to retrieve data
 @st.cache_data
 def get_data():
-    data = pd.read_csv("the_data.csv")
+    data = pd.read_csv(DATA_URL)
     data['DOB'] = pd.to_datetime(data['DOB'], format='%d/%m/%Y')
     data['PHONE'] = data['PHONE'].astype('str').replace('0', np.nan)
     return data
