@@ -1,25 +1,35 @@
 import streamlit as st
-import plotly.express as px
 import utils
 
 data = utils.get_data()
-st.subheader("Longest Name")
-st.success(data.iloc[data["NAME"].str.len().idxmax()]['NAME'])
-
-st.subheader("Shortest Name")
-st.info(data.iloc[data["NAME"].str.len().idxmin()]['NAME'])
-
-st.subheader("Oldest")
-st.success(data.iloc[data["DOB"].idxmin()]["NAME"])
-
-st.subheader("Youngest")
-st.info(data.iloc[data["DOB"].idxmax()]["NAME"])
+col1, col2 = st.columns(2, vertical_alignment='center')
+with col1:
+    st.subheader("Longest Name")
+    st.info(data.iloc[data["NAME"].str.len().idxmax()]['NAME'])
+with col2:
+    st.subheader("Shortest Name")
+    st.info(data.iloc[data["NAME"].str.len().idxmin()]['NAME'])
+    
+col1, col2 = st.columns(2)
+with col1:
+    st.subheader("Oldest")
+    st.info(data.iloc[data["DOB"].idxmin()]["NAME"])
+with col2:
+    st.subheader("Youngest")
+    st.info(data.iloc[data["DOB"].idxmax()]["NAME"])
 
 st.divider()
 
 st.subheader("Birthday count")
-birthday_frame = utils.get_birthday_frame(data["DOB"])
-col = st.selectbox("By", birthday_frame.columns)
-df = birthday_frame[col].value_counts()
-color = df.index.str.slice(0, 4) if col == "Year-Month" else None
-st.bar_chart(df)
+how = st.selectbox("By", utils.date_formats.keys())
+df = utils.get_birthday_count(data["DOB"], how)
+if how == "Year-Month":
+    df["color"] = df[how].str.slice(0, 4)
+st.bar_chart(
+    data=df, 
+    x=how, 
+    y='count', 
+    color='color' if 'color' in df.columns else None
+)
+
+st.caption("More to come.")

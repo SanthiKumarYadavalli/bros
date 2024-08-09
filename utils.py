@@ -71,9 +71,17 @@ def get_flame_bros(bro):
     return them
 
 
+date_formats = {
+    "Year": "%Y",
+    "Month": "%b",
+    "Day": "%a",
+    "Year-Month": "%Y-%b"
+}
+
+
 @st.cache_data
-def get_birthday_frame(dob):
-    frame = pd.DataFrame()
+def get_birthday_count(dob, how):
+    """returns a DataFrame of count of birthdays based on 'how'"""
     months = [
         "Jan", "Feb", "Mar", "Apr", "May", "Jun",
         "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
@@ -85,12 +93,7 @@ def get_birthday_frame(dob):
         "Day": days,
         "Year-Month": ["-".join(p) for p in product(years, months)]
     }
-    frame["Year"] = dob.dt.strftime("%Y")
-    frame["Month"] = dob.dt.strftime("%b").astype('category')
-    frame["Day"] = dob.dt.strftime("%a").astype('category')
-    frame["Year-Month"] = dob.dt.strftime("%Y-%b").astype('category')
-    
-    for c in order:
-        frame[c] = frame[c].cat.set_categories(order[c], ordered=True)
-    
-    return frame
+    dob = dob.dt.strftime(date_formats[how]).astype('category')
+    if how in order:
+        dob = dob.cat.set_categories(order[how], ordered=True)
+    return dob.value_counts().rename_axis(how).reset_index()
