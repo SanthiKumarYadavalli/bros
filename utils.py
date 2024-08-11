@@ -101,3 +101,13 @@ def get_birthday_count(dob, how):
     if how in order:
         dob = dob.cat.set_categories(order[how], ordered=True)
     return dob.value_counts().rename_axis(how).reset_index()
+
+
+def get_ages(dobs):
+    """return a series of count of ages"""
+    age_count = (today.year - dobs.dt.year + ((dobs.dt.month < today.month) & (dobs.dt.day < today.day)).astype(int)).value_counts()
+    age_count.index.name = 'Age'
+    return age_count
+
+def calculate_age(dob):
+    return (today.year - dob.year + ((dob.month < today.month) and (dob.day < today.day)))
