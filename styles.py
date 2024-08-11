@@ -1,3 +1,5 @@
+CSS = """
 img {
   border-radius: 10px;
 }
+"""

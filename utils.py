@@ -2,17 +2,18 @@ from collections import Counter
 from string import ascii_lowercase
 from itertools import product
 import datetime
-import os
 import requests
 import streamlit as st
 import numpy as np
 import pandas as pd
-from dotenv import load_dotenv
 
-load_dotenv()
-DATA_URL = os.getenv("DATA_URL")
-IMAGE_URL = os.getenv("IMAGE_URL")
+DATA_URL = "https://raw.githubusercontent.com/pythonista69/r20/main/the_data.csv"
+IMAGE_URL = "https://raw.githubusercontent.com/pythonista69/r20/main/images/"
 today = datetime.date.today()
+
+
+def calculate_age(dob):
+    return (today.year - dob.year - ((dob.month, dob.day) > (today.month, today.day)))
 
 
 # to retrieve data
@@ -21,6 +22,7 @@ def get_data():
     data = pd.read_csv(DATA_URL)
     data['DOB'] = pd.to_datetime(data['DOB'], format='%d/%m/%Y')
     data['PHONE'] = data['PHONE'].astype('str').replace('0', np.nan)
+    data['AGE'] = data["DOB"].apply(calculate_age)
     return data
 
 
@@ -84,30 +86,21 @@ date_formats = {
 
 
 @st.cache_data
-def get_birthday_count(dob, how):
+def get_birthday_count(dobs, how):
     """returns a DataFrame of count of birthdays based on 'how'"""
     months = [
         "Jan", "Feb", "Mar", "Apr", "May", "Jun",
         "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
     ]
     days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
-    years = sorted(dob.dt.strftime("%Y").unique())
+    years = sorted(dobs.dt.strftime("%Y").unique())
     order = {
         "Month": months,
         "Day": days,
         "Year-Month": ["-".join(p) for p in product(years, months)]
     }
-    dob = dob.dt.strftime(date_formats[how]).astype('category')
+    dobs = dobs.dt.strftime(date_formats[how]).astype('category')
     if how in order:
-        dob = dob.cat.set_categories(order[how], ordered=True)
-    return dob.value_counts().rename_axis(how).reset_index()
+        dobs = dobs.cat.set_categories(order[how], ordered=True)
+    return dobs.value_counts().rename_axis(how).reset_index()
 
-
-def get_ages(dobs):
-    """return a series of count of ages"""
-    age_count = (today.year - dobs.dt.year + ((dobs.dt.month < today.month) & (dobs.dt.day < today.day)).astype(int)).value_counts()
-    age_count.index.name = 'Age'
-    return age_count
-
-def calculate_age(dob):
-    return (today.year - dob.year + ((dob.month < today.month) and (dob.day < today.day)))

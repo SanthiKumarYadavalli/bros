@@ -39,7 +39,7 @@ st.bar_chart(
 )
 
 st.subheader("Age count")
-age_count = utils.get_ages(data['DOB'])
-st.plotly_chart(px.bar(age_count))
+st.plotly_chart(px.bar(data['AGE'].value_counts()))
 
-st.caption("More to come.")
+
+st.caption("More to come.") 

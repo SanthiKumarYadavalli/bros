@@ -31,7 +31,7 @@ with tab1:
 
         with col2:  # details col
             cols = [
-                'ID', 'GENDER', 'DOB', 'BRANCH', 'FATHER', 'MOTHER', 'CASTE', 
+                'ID', 'GENDER', 'DOB', 'AGE', 'BRANCH', 'FATHER', 'MOTHER', 'CASTE', 
                 'MANDAL', 'DISTRICT', 'SCHOOL', 'PHONE', 'Parent', 
                 'BLOOD GROUP', 'ADDRESS', 'CGPA']
             display_df = bro_data[cols]
