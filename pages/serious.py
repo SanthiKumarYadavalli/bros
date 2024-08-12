@@ -10,7 +10,7 @@ tab1, tab2 = st.tabs(["Search", "Birthdays",])
 with tab1:
     # search box
     search_fields = ["ID", "NAME", "PHONE"]
-    selected_field = st.radio("SEARCH BY", search_fields, index=0)
+    selected_field = st.radio("SEARCH BY", search_fields, index=1)
     selected_value = st.selectbox(
         "Search", data[selected_field].dropna(),
         placeholder=f"Enter {selected_field}", index=None
@@ -36,16 +36,23 @@ with tab1:
                 'BLOOD GROUP', 'ADDRESS', 'CGPA']
             display_df = bro_data[cols]
             display_df["DOB"] = display_df["DOB"].strftime("%d %B %Y")
-            st.table(display_df)
-            if bro_data.notna()["PHONE"]:
-                st.link_button(
-                    ":green[Whatsapp]",
-                    f"https://wa.me/+91{bro_data.PHONE}"
-                )
-                
+            st.dataframe(display_df.dropna(), use_container_width=True)
+
         # BIRTHDAY BRO
         if bro_data['DOB'].month == today.month and bro_data['DOB'].day == today.day:
             st.balloons()
+
+        if bro_data.notna()['PHONE']:
+            st.link_button(
+                ":green[Whatsapp]",
+                f"https://wa.me/+91{bro_data.PHONE}",
+                use_container_width=True
+            )
+            st.link_button(
+                ":blue[Call]",
+                f"tel:{bro_data.PHONE}",
+                use_container_width=True
+            )
 
 
 # BIRTHDAY TAB
@@ -53,4 +60,14 @@ with tab2:
     day = st.radio(label="When", options=['Yesterday', 'Today', 'Tomorrow'], index=1)
     delta = {"Yesterday": -1, "Today": 0, "Tomorrow": 1}
     birthdays = utils.get_birthdays(data, today + datetime.timedelta(days=delta[day]))
-    birthdays
+    ret = st.dataframe(
+        birthdays,
+        use_container_width=True,
+        hide_index=True,
+        column_config={
+            "WhatsApp": st.column_config.LinkColumn(display_text="Wish Them!"),
+            "IMG": st.column_config.ImageColumn(),
+            "NAME": st.column_config.TextColumn(width="medium")
+        }
+    )
+

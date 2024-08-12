@@ -21,7 +21,7 @@ def calculate_age(dob):
 def get_data():
     data = pd.read_csv(DATA_URL)
     data['DOB'] = pd.to_datetime(data['DOB'], format='%d/%m/%Y')
-    data['PHONE'] = data['PHONE'].astype('str').replace('0', np.nan)
+    data['PHONE'] = data['PHONE'].astype('str').replace("nan", np.nan)
     data['AGE'] = data["DOB"].apply(calculate_age)
     return data
 
@@ -35,9 +35,14 @@ def get_image(ID):
 
 # GET birthday's info
 def get_birthdays(data, date):
-    birthdays = data[(data.DOB.dt.month == date.month) & (
-                data.DOB.dt.day == date.day)]\
-                .loc[:, ['ID', 'NAME', 'BRANCH']].reset_index(drop=True)
+    birthdays = data[
+                    (data.DOB.dt.month == date.month) & \
+                    (data.DOB.dt.day == date.day)
+                ]
+    wish = "Happy Birthday! ✨"
+    birthdays["WhatsApp"] = birthdays["PHONE"].apply(lambda x: f"https://wa.me/91{x}?text={wish}")
+    birthdays["IMG"] = birthdays["ID"].apply(lambda x: f"{IMAGE_URL}{x}.jpg")
+    birthdays = birthdays.loc[:, ['IMG', 'NAME', 'BRANCH', "WhatsApp"]].reset_index(drop=True)
     birthdays.index += 1
     return birthdays
 
