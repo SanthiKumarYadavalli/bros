@@ -8,7 +8,7 @@ today = datetime.date.today()
 search_fields = ["ID", "NAME", "PHONE"]
 selected_field = st.radio("SEARCH BY", search_fields, index=1)
 selected_value = st.selectbox(
-    "Search", data[selected_field].dropna(),
+    "Search", data[selected_field].dropna().sort_values(),
     placeholder=f"Enter {selected_field}", index=None
 )
 # fetching data
@@ -32,7 +32,7 @@ if bro_data is not None:
             'BLOOD GROUP', 'ADDRESS', 'CGPA']
         display_df = bro_data[cols]
         display_df["DOB"] = display_df["DOB"].strftime("%d %B %Y")
-        st.dataframe(display_df.dropna(), use_container_width=True)
+        st.dataframe(display_df.dropna().astype(str), use_container_width=True)
 
     # BIRTHDAY BRO
     if bro_data['DOB'].month == today.month and bro_data['DOB'].day == today.day:

@@ -7,6 +7,7 @@ import streamlit as st
 import numpy as np
 import pandas as pd
 
+pd.options.mode.copy_on_write = True
 DATA_URL = "https://raw.githubusercontent.com/pythonista69/r20/main/the_data.csv"
 IMAGE_URL = "https://raw.githubusercontent.com/pythonista69/r20/main/images/"
 today = datetime.date.today()
