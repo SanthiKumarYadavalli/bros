@@ -1,8 +1,9 @@
 import streamlit as st
 import utils
-from utils import today
+import datetime
 
 data = utils.get_data()
+today = datetime.date.today()
 
 search_fields = ["ID", "NAME", "PHONE"]
 selected_field = st.radio("SEARCH BY", search_fields, index=1)

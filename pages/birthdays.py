@@ -1,9 +1,9 @@
 import streamlit as st
 import datetime
-from utils import today
 import utils
 
 data = utils.get_data()
+today = datetime.date.today()
 
 day = st.radio(label="When", options=['Yesterday', 'Today', 'Tomorrow'], index=1)
 delta = {"Yesterday": -1, "Today": 0, "Tomorrow": 1}
