@@ -4,11 +4,10 @@ from itertools import product
 import datetime
 import requests
 import streamlit as st
-import numpy as np
 import pandas as pd
+import joblib
 
 pd.options.mode.copy_on_write = True
-DATA_URL = "https://raw.githubusercontent.com/pythonista69/r20/main/the_data.csv"
 IMAGE_URL = "https://raw.githubusercontent.com/pythonista69/r20/main/images/"
 today = datetime.date.today()
 
@@ -20,9 +19,7 @@ def calculate_age(dob):
 # to retrieve data
 @st.cache_data
 def get_data():
-    data = pd.read_csv(DATA_URL)
-    data['DOB'] = pd.to_datetime(data['DOB'], format='%d/%m/%Y')
-    data['PHONE'] = data['PHONE'].astype('str').replace("nan", np.nan)
+    data = joblib.load("data")
     data['AGE'] = data["DOB"].apply(calculate_age)
     return data
 
