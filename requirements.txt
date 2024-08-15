@@ -13,7 +13,7 @@
 # GitPython==3.1.43
 # idna==3.7
 # Jinja2==3.1.4
-# joblib==1.4.2
+joblib==1.4.2
 # jsonschema==4.23.0
 # jsonschema-specifications==2023.12.1
 # markdown-it-py==3.0.0
