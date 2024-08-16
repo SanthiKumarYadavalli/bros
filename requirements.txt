@@ -5,8 +5,9 @@ cachetools==5.4.0
 certifi==2024.7.4
 charset-normalizer==3.3.2
 click==8.1.7
-face_recognition @ git+https://github.com/thetoby9944/face_recognition
+dlib-bin==19.24.2.post1
 face-recognition-models==0.3.0
+face_recognition @ git+https://github.com/thetoby9944/face_recognition@d632e2e8d5b5b286d944c333f3ff4433dafabb19
 gitdb==4.0.11
 GitPython==3.1.43
 idna==3.7
@@ -17,7 +18,7 @@ jsonschema-specifications==2023.12.1
 markdown-it-py==3.0.0
 MarkupSafe==2.1.5
 mdurl==0.1.2
-numpy==2.0.1
+numpy==1.26.0
 packaging==24.1
 pandas==2.2.2
 pillow==10.4.0
