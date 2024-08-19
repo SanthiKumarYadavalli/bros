@@ -79,31 +79,3 @@ def get_flame_bros(bro):
     them['flame'] = them['flame'].cat.set_categories(flame_map.values())
     return them
 
-
-date_formats = {
-    "Year": "%Y",
-    "Month": "%b",
-    "Day": "%a",
-    "Year-Month": "%Y-%b"
-}
-
-
-@st.cache_data
-def get_birthday_count(dobs, how):
-    """returns a DataFrame of count of birthdays based on 'how'"""
-    months = [
-        "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
-    ]
-    days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
-    years = sorted(dobs.dt.strftime("%Y").unique())
-    order = {
-        "Month": months,
-        "Day": days,
-        "Year-Month": ["-".join(p) for p in product(years, months)]
-    }
-    dobs = dobs.dt.strftime(date_formats[how]).astype('category')
-    if how in order:
-        dobs = dobs.cat.set_categories(order[how], ordered=True)
-    return dobs.value_counts().rename_axis(how).reset_index()
-

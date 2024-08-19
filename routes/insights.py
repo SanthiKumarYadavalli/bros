@@ -1,3 +1,4 @@
+from itertools import product
 import streamlit as st
 import plotly.express as px
 import utils
@@ -27,16 +28,47 @@ with col2:
 st.divider()
 
 st.subheader("Birthday count")
-how = st.selectbox("By", utils.date_formats.keys())
-df = utils.get_birthday_count(data["DOB"], how)
-if how == "Year-Month":
-    df["color"] = df[how].str.slice(0, 4)
-st.bar_chart(
-    data=df, 
-    x=how, 
-    y='count', 
-    color='color' if 'color' in df.columns else None
+
+dobs = data["DOB"]
+date_formats = {
+    "Year": "%Y",
+    "Month": "%b",
+    "Day": "%a",
+    "Year-Month": "%Y-%b"
+}
+months = [
+    "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+]
+days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+years = sorted(dobs.dt.strftime("%Y").unique())
+order = {
+    "Year": years,
+    "Month": months,
+    "Day": days,
+    "Year-Month": ["-".join(p) for p in product(years, months)]
+}
+
+how = st.selectbox("By", date_formats.keys())
+counts = dobs.dt.strftime(date_formats[how]).value_counts().rename_axis(how).reset_index()
+fig = px.bar(
+    data_frame=counts,
+    x=how,
+    y="count",
+    color=counts[how].str.slice(0, 4) if how == "Year-Month" else None,
+    category_orders={how: order[how]},
+    text_auto=True,
 )
+fig.update_traces(
+    textposition="outside",
+    hovertemplate="%{y}<extra></extra><br>%{x}"
+)
+fig.update_layout(
+    dragmode=False,
+    showlegend=how=="Year-Month",
+    hovermode='closest' if how=="Year-Month" else False
+)
+st.plotly_chart(fig)
 
 st.subheader("Age count")
 st.plotly_chart(px.bar(data['AGE'].value_counts()))
