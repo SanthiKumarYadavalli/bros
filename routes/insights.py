@@ -14,16 +14,18 @@ with col2:
     st.subheader("Shortest Name")
     shortest_name = data.iloc[data["NAME"].str.len().idxmin()]['NAME']
     st.info(f"{shortest_name} - :green[{len(shortest_name.replace(' ', ''))}]")
-    
+
 col1, col2 = st.columns(2)
 with col1:
     st.subheader("Oldest")
     idx = data["DOB"].idxmin()
-    st.info(f'{data.iloc[idx]["NAME"]} - :green[{utils.calculate_age(data.iloc[idx]["DOB"])}y]')
+    st.info(
+        f'{data.iloc[idx]["NAME"]} - :green[{utils.calculate_age(data.iloc[idx]["DOB"])}y]')
 with col2:
     st.subheader("Youngest")
     idx = data["DOB"].idxmax()
-    st.info(f'{data.iloc[idx]["NAME"]} - :green[{utils.calculate_age(data.iloc[idx]["DOB"])}y]')
+    st.info(
+        f'{data.iloc[idx]["NAME"]} - :green[{utils.calculate_age(data.iloc[idx]["DOB"])}y]')
 
 st.divider()
 
@@ -50,7 +52,8 @@ order = {
 }
 
 how = st.selectbox("By", date_formats.keys())
-counts = dobs.dt.strftime(date_formats[how]).value_counts().rename_axis(how).reset_index()
+counts = dobs.dt.strftime(
+    date_formats[how]).value_counts().rename_axis(how).reset_index()
 fig = px.bar(
     data_frame=counts,
     x=how,
@@ -65,13 +68,23 @@ fig.update_traces(
 )
 fig.update_layout(
     dragmode=False,
-    showlegend=how=="Year-Month",
-    hovermode='closest' if how=="Year-Month" else False
+    showlegend=how == "Year-Month",
+    hovermode='closest' if how == "Year-Month" else False
 )
 st.plotly_chart(fig)
 
+# Age Count
 st.subheader("Age count")
-st.plotly_chart(px.bar(data['AGE'].value_counts()))
+fig = px.bar(data['AGE'].value_counts(), text_auto=True)
+fig.update_traces(
+    textposition='outside',
+)
+fig.update_layout(
+    xaxis_title='Age',
+    yaxis_title='count',
+    **utils.DEFAULT_LAYOUT
+)
+st.plotly_chart(fig)
 
 
-st.caption("More to come.") 
+st.caption("More to come.")
