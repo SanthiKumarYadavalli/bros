@@ -9,6 +9,11 @@ import joblib
 
 pd.options.mode.copy_on_write = True
 IMAGE_URL = "https://raw.githubusercontent.com/pythonista69/r20/main/images/"
+DEFAULT_LAYOUT = dict(
+    dragmode=False,
+    hovermode=False,
+    showlegend=False
+)
 today = datetime.date.today()
 
 
@@ -34,13 +39,15 @@ def get_image(ID):
 # GET birthday's info
 def get_birthdays(data, date):
     birthdays = data[
-                    (data.DOB.dt.month == date.month) & \
-                    (data.DOB.dt.day == date.day)
-                ]
+        (data.DOB.dt.month == date.month) &
+        (data.DOB.dt.day == date.day)
+    ]
     wish = "Happy Birthday! ✨"
-    birthdays["WhatsApp"] = birthdays["PHONE"].apply(lambda x: f"https://wa.me/91{x}?text={wish}")
+    birthdays["WhatsApp"] = birthdays["PHONE"].apply(
+        lambda x: f"https://wa.me/91{x}?text={wish}")
     birthdays["IMG"] = birthdays["ID"].apply(lambda x: f"{IMAGE_URL}{x}.jpg")
-    birthdays = birthdays.loc[:, ['IMG', 'NAME', 'BRANCH', "WhatsApp"]].reset_index(drop=True)
+    birthdays = birthdays.loc[:, ['IMG', 'NAME',
+                                  'BRANCH', "WhatsApp"]].reset_index(drop=True)
     birthdays.index += 1
     return birthdays
 
@@ -74,8 +81,8 @@ def get_flame_bros(bro):
         data["GENDER"] == ('FEMALE' if g == 'MALE' else 'MALE'),
         ['NAME', 'BRANCH']
     ]
-    them['flame'] = them.apply(lambda s1: get_flame_text(bro, s1["NAME"])[1], axis=1)
+    them['flame'] = them.apply(
+        lambda s1: get_flame_text(bro, s1["NAME"])[1], axis=1)
     them['flame'] = them['flame'].astype("category")
     them['flame'] = them['flame'].cat.set_categories(flame_map.values())
     return them
-
