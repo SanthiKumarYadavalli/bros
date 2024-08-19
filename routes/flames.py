@@ -32,14 +32,22 @@ with tab2:
             selected.index += 1
         except KeyError:
             selected = None
-        st.write(selected)
+        st.dataframe(selected)
 
         # header ?
-        fig = px.bar(them['flame'].value_counts(), text_auto=True)
+        counts = them['flame'].value_counts().reset_index()
+        fig = px.bar(counts,
+                     x='flame',
+                     y='count',
+                     text_auto=True,
+                     category_orders={'flame': ['Friends', 'Lovers', 'Affection', 'Marriage', 'Enemies', 'Siblings']}
+        )
         fig.update_traces(
             textposition='outside'
         )
         fig.update_layout(
             **utils.DEFAULT_LAYOUT,
+            xaxis_title='',
+            yaxis_title='count',
         )
         st.plotly_chart(fig)
