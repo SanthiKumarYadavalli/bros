@@ -1,6 +1,5 @@
 from collections import Counter
 from string import ascii_lowercase
-from itertools import product
 import datetime
 import requests
 import streamlit as st
@@ -62,7 +61,7 @@ flame_map = {
 }
 
 
-def get_flame_text(s1, s2):
+def get_flames_1v1(s1, s2):
     c1 = Counter(s1.lower())
     c2 = Counter(s2.lower())
     num = sum([abs(c1[x] - c2[x]) for x in ascii_lowercase]) - 1
@@ -74,7 +73,7 @@ def get_flame_text(s1, s2):
     return arr[0], flame_map[arr[0]]
 
 
-def get_flame_bros(bro):
+def get_flames_1vn(bro):
     data = get_data()
     g = data[data['NAME'] == bro].iloc[0, 2]
     them = data.loc[
@@ -82,7 +81,7 @@ def get_flame_bros(bro):
         ['NAME', 'BRANCH']
     ]
     them['flame'] = them.apply(
-        lambda s1: get_flame_text(bro, s1["NAME"])[1], axis=1)
+        lambda s1: get_flames_1v1(bro, s1["NAME"])[1], axis=1)
     them['flame'] = them['flame'].astype("category")
     them['flame'] = them['flame'].cat.set_categories(flame_map.values())
     return them
