@@ -10,5 +10,7 @@ if img:
     enc = face_recognition.face_encodings(img)
     if enc:
         distances = data['enc'].dropna().apply(lambda e: face_recognition.face_distance([e], enc[0])[0])
+        mindex = distances.idxmin()
+        st.write(f"I'm {100 - round(distances[mindex] * 100, 2)}% sure that")
         st.header(f"You're :blue[{data.loc[distances.idxmin(), 'NAME'].title()}]")
         

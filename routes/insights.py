@@ -73,6 +73,7 @@ fig.update_layout(
 )
 st.plotly_chart(fig)
 
+
 # Age Count
 st.subheader("Age count")
 fig = px.bar(data['AGE'].value_counts(), text_auto=True)

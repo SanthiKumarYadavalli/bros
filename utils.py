@@ -37,6 +37,7 @@ def get_image(ID):
 
 # GET birthday's info
 def get_birthdays(data, date):
+    """get all bros whose birthday is on the given date"""
     birthdays = data[
         (data.DOB.dt.month == date.month) &
         (data.DOB.dt.day == date.day)
@@ -62,6 +63,7 @@ flame_map = {
 
 
 def get_flames_1v1(s1, s2):
+    """Simple 1v1 flames"""
     c1 = Counter(s1.lower())
     c2 = Counter(s2.lower())
     num = sum([abs(c1[x] - c2[x]) for x in ascii_lowercase]) - 1
@@ -74,14 +76,46 @@ def get_flames_1v1(s1, s2):
 
 
 def get_flames_1vn(bro):
+    """returns a dataframe of containing bro's opposite gender guys
+    with a 'flame' column of flame of bro and them"""   
     data = get_data()
-    g = data[data['NAME'] == bro].iloc[0, 2]
+    g = data[data['NAME'] == bro].iloc[0, 2] # gender of bro
     them = data.loc[
         data["GENDER"] == ('FEMALE' if g == 'MALE' else 'MALE'),
         ['NAME', 'BRANCH']
-    ]
+    ]  # opposite gender bros
     them['flame'] = them.apply(
-        lambda s1: get_flames_1v1(bro, s1["NAME"])[1], axis=1)
+        lambda s1: get_flames_1v1(bro, s1["NAME"])[1],
+        axis=1
+    )
     them['flame'] = them['flame'].astype("category")
     them['flame'] = them['flame'].cat.set_categories(flame_map.values())
     return them
+
+
+# @st.cache_data
+# def get_flame_matrix():
+#     data = get_data()
+#     males = data.query("GENDER == 'MALE'")["NAME"].reset_index(drop=True)
+#     females = data.query("GENDER == 'FEMALE'")["NAME"].reset_index(drop=True)
+#     flame_matrix = np.zeros((len(males), len(females)))
+#     for i, potta in males.items():
+#         for j, potti in females.items():
+#             flame_matrix[i][j] = get_flames_1v1(potta, potti)[0]
+            
+#     male_matrix = np.zeros((len(males), 6))
+#     female_matrix = np.zeros((len(females), 6))
+#     for i in range(flame_matrix.shape[0]):
+#         vals, counts = np.unique(flame_matrix[i], return_counts=True)
+#         vals = vals.astype(int)
+#         for j in range(len(vals)):
+#             male_matrix[i][vals[j]] = counts[j]
+            
+#     flame_matrix = flame_matrix.T
+#     for i in range(flame_matrix.shape[0]):
+#         vals, counts = np.unique(flame_matrix[i], return_counts=True)
+#         vals = vals.astype(int)
+#         for j in range(len(vals)):
+#             female_matrix[i][vals[j]] = counts[j]
+    
+#     return male_matrix, female_matrix
