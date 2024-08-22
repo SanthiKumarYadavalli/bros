@@ -29,6 +29,7 @@ with col2:
 
 st.divider()
 
+# --- Birthday count ---
 st.subheader("Birthday count")
 
 dobs = data["DOB"]
@@ -64,6 +65,7 @@ fig = px.bar(
 )
 fig.update_traces(
     textposition="outside",
+    textfont_size=14,
     hovertemplate="%{y}<extra></extra><br>%{x}"
 )
 fig.update_layout(
@@ -74,18 +76,45 @@ fig.update_layout(
 st.plotly_chart(fig)
 
 
-# Age Count
+# --- Age Count ---
 st.subheader("Age count")
-fig = px.bar(data['AGE'].value_counts(), text_auto=True)
-fig.update_traces(
-    textposition='outside',
+ages = data['AGE'].value_counts().reset_index()
+fig = px.pie(ages, values='count', names='AGE', hole=0.5)
+fig.update_traces(textposition='inside', textinfo='percent+value')
+st.plotly_chart(fig)
+
+
+# --- Name freq ---
+st.subheader("Top Names")
+name_freq, char_freq = utils.get_name_counts()
+top_names = name_freq[:20]
+fig = px.bar(
+    x=[name for name, _ in top_names],
+    y=[count for _, count in top_names],
+    text_auto=True
 )
+fig.update_traces(textposition="outside", textfont_size=14)
 fig.update_layout(
-    xaxis_title='Age',
-    yaxis_title='count',
-    **utils.DEFAULT_LAYOUT
+    **utils.DEFAULT_LAYOUT, 
+    xaxis_title='', 
+    yaxis_title='',
+    yaxis_showgrid=False
 )
 st.plotly_chart(fig)
 
+st.subheader("Character Count")
+fig = px.bar(
+    x=[name for name, _ in char_freq],
+    y=[count for _, count in char_freq],
+    text_auto=True
+)
+fig.update_traces(textposition="outside")
+fig.update_layout(
+    **utils.DEFAULT_LAYOUT, 
+    xaxis_title='', 
+    yaxis_title='',
+    yaxis_showgrid=False
+)
+st.plotly_chart(fig)
 
 st.caption("More to come.")

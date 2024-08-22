@@ -1,5 +1,5 @@
-from collections import Counter
-from string import ascii_lowercase
+from collections import Counter, defaultdict
+from string import ascii_lowercase, ascii_uppercase
 import datetime
 import requests
 import streamlit as st
@@ -119,3 +119,22 @@ def get_flames_1vn(bro):
 #             female_matrix[i][vals[j]] = counts[j]
     
 #     return male_matrix, female_matrix
+
+
+@st.cache_data
+def get_name_counts():
+    """Returns subnames frequency and character frequency of all names"""
+    freq_by_subname = defaultdict(int)
+    freq_by_char = {x: 0 for x in ascii_uppercase}
+    for name in get_data()["NAME"]:
+        for sub in name.split()[1:]:
+            if len(sub) > 1:
+                freq_by_subname[sub] += 1
+        for c in name:
+            if c in freq_by_char:
+                freq_by_char[c] += 1
+                
+    return (
+        sorted(freq_by_subname.items(), key=lambda x: x[1])[::-1],
+        list(freq_by_char.items())
+    )
