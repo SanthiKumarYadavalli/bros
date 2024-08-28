@@ -86,6 +86,10 @@ with tab3:
     st.write(f"Boys' count: {mc}")
     st.write(f"Girls' count: {fc}")
     
+    st.write("Here are the record holders in every flame.")
+    st.caption("Maximum By count: who has more count in that flame")
+    st.caption("Maximum By percentage: who covered more proportion of people in that flame")
+    
     perc = lambda row: row.iloc[1] / (fc if row.iloc[0] == "MALE" else mc)
     for i, x in enumerate("flames"):
         pcol = x + 'p'  # percentage column

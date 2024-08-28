@@ -28,6 +28,11 @@ def get_data():
     return data
 
 
+@st.cache_data
+def get_famous_bros():
+    return joblib.load("famousbros")
+
+
 # GET image
 @st.cache_data
 def get_image(ID):

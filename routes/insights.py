@@ -3,34 +3,37 @@ import streamlit as st
 import plotly.express as px
 import utils
 
+st.write("Here, You will know hidden insights in the data")
+
 data = utils.get_data()
 col1, col2 = st.columns(2, vertical_alignment='center')
 with col1:
     st.subheader("Longest Name")
     longest_name = data.iloc[data["NAME"].str.len().idxmax()]['NAME']
-    st.info(f"{longest_name} - :green[{len(longest_name.replace(' ', ''))}]")
+    st.info(f"{longest_name} - :green[{len(longest_name)} chars]")
 
 with col2:
     st.subheader("Shortest Name")
     shortest_name = data.iloc[data["NAME"].str.len().idxmin()]['NAME']
-    st.info(f"{shortest_name} - :green[{len(shortest_name.replace(' ', ''))}]")
+    st.info(f"{shortest_name} - :green[{len(shortest_name)} chars]")
 
 col1, col2 = st.columns(2)
 with col1:
     st.subheader("Oldest")
     idx = data["DOB"].idxmin()
     st.info(
-        f'{data.iloc[idx]["NAME"]} - :green[{utils.calculate_age(data.iloc[idx]["DOB"])}y]')
+        f'{data.iloc[idx]["NAME"]} - :green[{utils.calculate_age(data.iloc[idx]["DOB"])} years]')
 with col2:
     st.subheader("Youngest")
     idx = data["DOB"].idxmax()
     st.info(
-        f'{data.iloc[idx]["NAME"]} - :green[{utils.calculate_age(data.iloc[idx]["DOB"])}y]')
+        f'{data.iloc[idx]["NAME"]} - :green[{utils.calculate_age(data.iloc[idx]["DOB"])} years]')
 
 st.divider()
 
 # --- Birthday count ---
 st.subheader("Birthday count")
+st.write("Let's check out how many birthdays fall in a time range")
 
 dobs = data["DOB"]
 date_formats = {
@@ -78,6 +81,7 @@ st.plotly_chart(fig)
 
 # --- Age Count ---
 st.subheader("Age count")
+st.write("This counts ages of everyone.")
 ages = data['AGE'].value_counts().reset_index()
 fig = px.pie(ages, values='count', names='AGE', hole=0.5)
 fig.update_traces(textposition='inside', textinfo='percent+value')
@@ -86,6 +90,7 @@ st.plotly_chart(fig)
 
 # --- Name freq ---
 st.subheader("Top Names")
+st.write("This shows count of top subnames.")
 name_freq, char_freq = utils.get_name_counts()
 top_names = name_freq[:20]
 fig = px.bar(
@@ -103,6 +108,7 @@ fig.update_layout(
 st.plotly_chart(fig)
 
 st.subheader("Character Count")
+st.write("This shows count of each character in all names combined.")
 fig = px.bar(
     x=[name for name, _ in char_freq],
     y=[count for _, count in char_freq],
