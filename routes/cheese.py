@@ -5,7 +5,7 @@ import utils
 qmap = {
     "Everyone": "Everyone",
     "OpGender": "Opposite Gender",
-    "Celebs": "Celebrities (Beta)"
+    "Celebs": "Celebrities"
 }
 
 vs = st.selectbox("bros to compare with", qmap.values())
@@ -38,6 +38,9 @@ if img:
             st.write(f"I'm {100 - round(predicted_bro['DISTANCE'] * 100, 2)}% sure that")
             st.header(f"You're{' looking like ' if vs != qmap['Everyone'] else ' '}:blue[{predicted_bro['NAME'].title()}]")
         with col2:
-            st.image(utils.get_image(predicted_bro['ID']))
+            if vs != qmap["Celebs"]:
+                st.image(utils.get_image(predicted_bro['ID']))
+            else:
+                st.link_button("Who?", f"https://www.google.com/search?q={predicted_bro['NAME']}")
     else:
         st.write("No face detected.")
