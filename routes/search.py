@@ -20,11 +20,17 @@ if selected_value:
                                                                           else selected_value
     bros_data = data.loc[data[selected_field] == selected_value].reset_index(drop=True)
     bros_data.index += 1
-    bro_data = bros_data.iloc[0]
     if bros_data.shape[0] != 1:
-        st.dataframe(bros_data[['ID', 'NAME', 'PHONE', 'BRANCH']], use_container_width=True)
-    else:
-        # DISPLAYING DATA  
+        bro = st.dataframe(bros_data[['ID', 'NAME', 'PHONE', 'BRANCH']], use_container_width=True,
+                                 on_select="rerun", selection_mode="single-row", hide_index=True)
+        st.caption(f"count: :green[{bros_data.shape[0]}]")
+        
+    if bros_data.shape[0] == 1 or len(bro.selection.rows):
+        # DISPLAYING DATA
+        if bros_data.shape[0] == 1:
+            bro_data = bros_data.iloc[0]
+        else:
+            bro_data = bros_data.iloc[bro.selection.rows[0]]  
         st.subheader(bro_data['NAME'], divider="rainbow")
         col1, col2 = st.columns(2, gap="large", vertical_alignment="center")
         bro_data.name = ""  # hide table header
