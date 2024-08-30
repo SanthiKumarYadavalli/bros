@@ -4,9 +4,8 @@ import datetime
 
 data = utils.get_data()
 today = datetime.date.today()
-
-search_fields = ["ID", "NAME", "PHONE", "GENDER", 
-                 "DOB", 'BRANCH', "MANDAL", "DISTRICT", "CASTE", "SCHOOL"]
+search_fields = ["ID", "NAME", "PHONE", "DOB", 
+                 'BRANCH', "MANDAL", "DISTRICT", "CASTE", "SCHOOL"]
 selected_field = st.selectbox("By", search_fields)
 datalist = data['DOB'].dt.strftime("%Y-%m-%d") if selected_field == 'DOB' else data[selected_field]
 selected_value = st.selectbox(
