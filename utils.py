@@ -5,6 +5,7 @@ import requests
 import streamlit as st
 import pandas as pd
 import joblib
+import json
 
 pd.options.mode.copy_on_write = True
 IMAGE_URL = "https://raw.githubusercontent.com/pythonista69/r20/main/images/"
@@ -82,9 +83,9 @@ def get_flames_1v1(s1, s2):
 
 def get_flames_1vn(bro):
     """returns a dataframe of containing bro's opposite gender guys
-    with a 'flame' column of flame of bro and them"""   
+    with a 'flame' column of flame of bro and them"""
     data = get_data()
-    g = data[data['NAME'] == bro].iloc[0, 2] # gender of bro
+    g = data[data['NAME'] == bro].iloc[0, 2]  # gender of bro
     them = data.loc[
         data["GENDER"] == ('FEMALE' if g == 'MALE' else 'MALE'),
         ['NAME', 'BRANCH']
@@ -107,7 +108,7 @@ def get_flames_1vn(bro):
 #     for i, potta in males.items():
 #         for j, potti in females.items():
 #             flame_matrix[i][j] = get_flames_1v1(potta, potti)[0]
-            
+
 #     male_matrix = np.zeros((len(males), 6))
 #     female_matrix = np.zeros((len(females), 6))
 #     for i in range(flame_matrix.shape[0]):
@@ -115,14 +116,14 @@ def get_flames_1vn(bro):
 #         vals = vals.astype(int)
 #         for j in range(len(vals)):
 #             male_matrix[i][vals[j]] = counts[j]
-            
+
 #     flame_matrix = flame_matrix.T
 #     for i in range(flame_matrix.shape[0]):
 #         vals, counts = np.unique(flame_matrix[i], return_counts=True)
 #         vals = vals.astype(int)
 #         for j in range(len(vals)):
 #             female_matrix[i][vals[j]] = counts[j]
-    
+
 #     return male_matrix, female_matrix
 
 
@@ -138,8 +139,23 @@ def get_name_counts():
         for c in name:
             if c in freq_by_char:
                 freq_by_char[c] += 1
-                
+
     return (
         sorted(freq_by_subname.items(), key=lambda x: x[1])[::-1],
         list(freq_by_char.items())
     )
+
+
+ids = {'SRIKAKULAM': 0, 'VIZIANAGARAM': 1, 'VISAKHAPATNAM': 2, 'KRISHNA': 3, 'GUNTUR': 4, 'EAST GODAVARI': 5,
+       'PRAKASAM': 6, 'KURNOOL': 7, 'ANANTAPUR': 8, 'NELLORE': 9, 'WEST GODAVARI': 10, 'Y.S.R': 11, 'CHITTOOR': 12}
+
+def get_districts_count():
+    data = get_data()
+    count = data['DISTRICT'].value_counts().reset_index()
+    districts = pd.DataFrame(list(ids.items()), columns=['DISTRICT', 'id'])
+    return pd.merge(districts, count, on='DISTRICT', how='left').fillna(0)
+
+@st.cache_data
+def get_geojson():
+    return json.load(open("ap_states_geo_rewound.json"))
+
