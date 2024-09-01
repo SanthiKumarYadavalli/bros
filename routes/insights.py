@@ -123,4 +123,16 @@ fig.update_layout(
 )
 st.plotly_chart(fig)
 
+#districts count
+# districts_count = utils.get_districts_count()
+# geo_json = utils.get_geojson()
+
+# fig = px.choropleth(data_frame=districts_count, locations='id', geojson=geo_json, color='count',
+#                    hover_name='DISTRICT', hover_data=['count'])
+# fig.update_geos(fitbounds="locations", visible=False)
+# fig.update_layout(geo=dict(bgcolor= 'rgba(0,0,0,0)'), dragmode=False,)
+
+
+# st.plotly_chart(fig)
+
 st.caption("More to come.")
