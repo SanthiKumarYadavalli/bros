@@ -26,6 +26,7 @@ def calculate_age(dob):
 def get_data():
     data = joblib.load("data")
     data['AGE'] = data["DOB"].apply(calculate_age)
+    data["IMG"] = data["ID"].apply(lambda x: f"{IMAGE_URL}{x}.jpg")
     return data
 
 
@@ -50,10 +51,11 @@ def get_birthdays(data, date):
     ]
     wish = "Happy Birthday! ✨"
     birthdays["WhatsApp"] = birthdays["PHONE"].apply(
-        lambda x: f"https://wa.me/91{x}?text={wish}")
-    birthdays["IMG"] = birthdays["ID"].apply(lambda x: f"{IMAGE_URL}{x}.jpg")
-    birthdays = birthdays.loc[:, ['IMG', 'NAME',
-                                  'BRANCH', "WhatsApp"]].reset_index(drop=True)
+        lambda x: f"https://wa.me/91{x}?text={wish}"
+    )
+    birthdays = birthdays.loc[:, 
+        ['IMG', 'NAME', 'BRANCH', "WhatsApp"]
+    ].reset_index(drop=True)
     birthdays.index += 1
     return birthdays
 
@@ -144,18 +146,5 @@ def get_name_counts():
         sorted(freq_by_subname.items(), key=lambda x: x[1])[::-1],
         list(freq_by_char.items())
     )
-
-
-ids = {'SRIKAKULAM': 0, 'VIZIANAGARAM': 1, 'VISAKHAPATNAM': 2, 'KRISHNA': 3, 'GUNTUR': 4, 'EAST GODAVARI': 5,
-       'PRAKASAM': 6, 'KURNOOL': 7, 'ANANTAPUR': 8, 'NELLORE': 9, 'WEST GODAVARI': 10, 'Y.S.R': 11, 'CHITTOOR': 12}
-
-def get_districts_count():
-    data = get_data()
-    count = data['DISTRICT'].value_counts().reset_index()
-    districts = pd.DataFrame(list(ids.items()), columns=['DISTRICT', 'id'])
-    return pd.merge(districts, count, on='DISTRICT', how='left').fillna(0)
-
-@st.cache_data
-def get_geojson():
-    return json.load(open("ap_states_geo_rewound.json"))
+    
 

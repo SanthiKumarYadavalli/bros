@@ -123,16 +123,18 @@ fig.update_layout(
 )
 st.plotly_chart(fig)
 
-#districts count
-# districts_count = utils.get_districts_count()
-# geo_json = utils.get_geojson()
+st.subheader("Count by District and ...")
+data.loc[1093, 'MANDAL'] = 'BANGLORE'
+vs = st.selectbox("and?", ["MANDAL", "GENDER"])
+fig = px.sunburst(data, path=["DISTRICT", vs], width=800, height=800)
+fig.update_traces(
+    hovertemplate="Count: %{value}"
+)
+fig.update_layout(
+    dragmode=False,
+    hoverlabel={"font_size": 20}
+)
 
-# fig = px.choropleth(data_frame=districts_count, locations='id', geojson=geo_json, color='count',
-#                    hover_name='DISTRICT', hover_data=['count'])
-# fig.update_geos(fitbounds="locations", visible=False)
-# fig.update_layout(geo=dict(bgcolor= 'rgba(0,0,0,0)'), dragmode=False,)
-
-
-# st.plotly_chart(fig)
+st.plotly_chart(fig)
 
 st.caption("More to come.")

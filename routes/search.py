@@ -4,7 +4,7 @@ import datetime
 
 data = utils.get_data()
 today = datetime.date.today()
-search_fields = ["ID", "NAME", "PHONE", "DOB", 
+search_fields = ["NAME", "ID", "PHONE", "DOB", 
                  'BRANCH', "MANDAL", "DISTRICT", "CASTE", "SCHOOL"]
 selected_field = st.selectbox("By", search_fields)
 datalist = data['DOB'].dt.strftime("%Y-%m-%d") if selected_field == 'DOB' else data[selected_field]
@@ -20,8 +20,14 @@ if selected_value:
     bros_data = data.loc[data[selected_field] == selected_value].reset_index(drop=True)
     bros_data.index += 1
     if bros_data.shape[0] != 1:
-        bro = st.dataframe(bros_data[['ID', 'NAME', 'PHONE', 'BRANCH']], use_container_width=True,
-                                 on_select="rerun", selection_mode="single-row", hide_index=True)
+        bro = st.dataframe(
+            bros_data[['IMG', 'ID', 'NAME', 'PHONE', 'BRANCH']], 
+            use_container_width=True,
+            on_select="rerun",
+            selection_mode="single-row",
+            hide_index=True,
+            column_config={"IMG": st.column_config.ImageColumn()}
+        )
         st.caption(f"count: :green[{bros_data.shape[0]}]")
         
     if bros_data.shape[0] == 1 or len(bro.selection.rows):
