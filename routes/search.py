@@ -2,25 +2,11 @@ import streamlit as st
 import utils
 import datetime
 
-data = utils.get_data()
-today = datetime.date.today()
-search_fields = ["NAME", "ID", "PHONE", "DOB", 
-                 'BRANCH', "MANDAL", "DISTRICT", "CASTE", "SCHOOL"]
-selected_field = st.selectbox("By", search_fields)
-datalist = data['DOB'].dt.strftime("%Y-%m-%d") if selected_field == 'DOB' else data[selected_field]
-selected_value = st.selectbox(
-    "Search", datalist.dropna().sort_values().unique(),
-    placeholder=f"Enter {selected_field}", index=None
-)
 
-# fetching data
-if selected_value:
-    selected_value = datetime.datetime.strptime(selected_value, "%Y-%m-%d") if selected_field == 'DOB' \
-                                                                          else selected_value
-    bros_data = data.loc[data[selected_field] == selected_value].reset_index(drop=True)
-    bros_data.index += 1
-    if bros_data.shape[0] != 1:
-        bro = st.dataframe(
+def display_results(bros_data):
+    one_bro = bros_data.shape[0] == 1
+    if not one_bro:
+        bros_list = st.dataframe(
             bros_data[['IMG', 'ID', 'NAME', 'PHONE', 'BRANCH']], 
             use_container_width=True,
             on_select="rerun",
@@ -29,13 +15,11 @@ if selected_value:
             column_config={"IMG": st.column_config.ImageColumn()}
         )
         st.caption(f"count: :green[{bros_data.shape[0]}]")
-        
-    if bros_data.shape[0] == 1 or len(bro.selection.rows):
-        # DISPLAYING DATA
-        if bros_data.shape[0] == 1:
-            bro_data = bros_data.iloc[0]
-        else:
-            bro_data = bros_data.iloc[bro.selection.rows[0]]  
+    
+    # display a bro's full data
+    # result is one bro or user selected a bro from the dataframe
+    if one_bro or len(bros_list.selection.rows):
+        bro_data = bros_data.iloc[0 if one_bro else bros_list.selection.rows[0]]
         st.subheader(bro_data['NAME'], divider="rainbow")
         col1, col2 = st.columns(2, gap="large", vertical_alignment="center")
         bro_data.name = ""  # hide table header
@@ -47,7 +31,8 @@ if selected_value:
             cols = [
                 'ID', 'GENDER', 'DOB', 'AGE', 'BRANCH', 'FATHER', 'MOTHER', 'CASTE',
                 'MANDAL', 'DISTRICT', 'SCHOOL', 'PHONE', 'Parent',
-                'BLOOD GROUP', 'ADDRESS', 'CGPA']
+                'BLOOD GROUP', 'ADDRESS', 'CGPA'
+            ]
             display_df = bro_data[cols]
             display_df["DOB"] = display_df["DOB"].strftime("%d %B %Y")
             st.dataframe(display_df.dropna().astype(str), use_container_width=True)
@@ -67,3 +52,22 @@ if selected_value:
                 f"tel:{bro_data.PHONE}",
                 use_container_width=True
             )
+
+
+data = utils.get_data()
+today = datetime.date.today()
+search_fields = ["NAME", "ID", "PHONE", "DOB", 
+                 'BRANCH', "MANDAL", "DISTRICT", "CASTE", "SCHOOL"]
+selected_field = st.selectbox("By", search_fields)
+datalist = data['DOB'].dt.strftime("%Y-%m-%d") if selected_field == 'DOB' else data[selected_field]
+selected_value = st.selectbox(
+    "Search", datalist.dropna().sort_values().unique(),
+    placeholder=f"Enter {selected_field}", index=None
+)
+# fetching data
+if selected_value:
+    if selected_field == 'DOB':
+        selected_value = datetime.datetime.strptime(selected_value, "%Y-%m-%d")
+    bros_data = data.loc[data[selected_field] == selected_value].reset_index(drop=True)
+    bros_data.index += 1
+    display_results(bros_data)
