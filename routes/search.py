@@ -3,7 +3,7 @@ import utils
 import datetime
 
 
-def display_results(bros_data):
+def render_results(bros_data):
     one_bro = bros_data.shape[0] == 1
     if not one_bro:
         bros_list = st.dataframe(
@@ -54,20 +54,47 @@ def display_results(bros_data):
             )
 
 
+def render_input_field(selected_field):
+    datalist = data['DOB'].dt.strftime("%Y-%m-%d") if selected_field == 'DOB' else data[selected_field]
+    return st.selectbox(
+        selected_field, datalist.dropna().sort_values().unique(),
+        placeholder=f"Enter {selected_field}", index=None
+    )
+
+
 data = utils.get_data()
 today = datetime.date.today()
-search_fields = ["NAME", "ID", "PHONE", "DOB", 
-                 'BRANCH', "MANDAL", "DISTRICT", "CASTE", "SCHOOL"]
-selected_field = st.selectbox("By", search_fields)
-datalist = data['DOB'].dt.strftime("%Y-%m-%d") if selected_field == 'DOB' else data[selected_field]
-selected_value = st.selectbox(
-    "Search", datalist.dropna().sort_values().unique(),
-    placeholder=f"Enter {selected_field}", index=None
-)
-# fetching data
-if selected_value:
+search_fields = ["NAME", "ID", "PHONE", "DOB", "BRANCH",
+                 'GENDER', "MANDAL", "DISTRICT", "CASTE", "SCHOOL", "FATHER", "MOTHER"]
+selected_fields = st.multiselect("By", search_fields, default="NAME", 
+                                 placeholder="Choose some options")
+col1, col2 = st.columns(2)
+nfields = len(selected_fields)
+q, r = divmod(nfields, 2)
+selected_map = {}
+with col1:
+    for i in range(0, nfields - r, 2):
+        selected_map[selected_fields[i]] = render_input_field(selected_fields[i])
+
+with col2:
+    for i in range(1, nfields, 2):
+        selected_map[selected_fields[i]] = render_input_field(selected_fields[i]) 
+               
+if r:
+    selected_map[selected_fields[-1]] = render_input_field(selected_fields[-1])
+
+
+queries = []
+for selected_field, selected_value in selected_map.items():
+    if not selected_value:
+        continue
     if selected_field == 'DOB':
         selected_value = datetime.datetime.strptime(selected_value, "%Y-%m-%d")
-    bros_data = data.loc[data[selected_field] == selected_value].reset_index(drop=True)
+    queries.append(f"({selected_field} == '{selected_value}')")
+query = "&".join(queries)
+
+if query:        
+    bros_data = data.query(query).reset_index(drop=True)
     bros_data.index += 1
-    display_results(bros_data)
+    render_results(bros_data)
+    
