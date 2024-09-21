@@ -6,6 +6,8 @@ import utils
 
 data = utils.get_data()
 
+#_____________________________LINE_CHART___________________________________
+
 st.subheader("SGPA Line Chart", divider="red")
 st.write("Enter your name or id to get your chart")
 gpa_cols = list(filter(lambda x: re.match("(p|e)\dsem\d", x), data.columns))
@@ -38,28 +40,36 @@ fig.update_layout(
 )
 st.plotly_chart(fig)
 
+#___________________________DISTRIBUTION_________________________________
+
 st.subheader("CGPA Distribution", divider="violet")
-bramch = st.selectbox("branch", data["BRANCH"].unique(), 
-                      index=None, placeholder="Select a bramch")
-bramch_bros = data.query(f"BRANCH == '{bramch}'") if bramch else data
+all_b = list(data["BRANCH"].unique())
+all_b.remove("GONE")
+bramches = st.multiselect("branch", all_b, 
+                      placeholder="Select a bramch")
 interval = st.selectbox("interval size", [1, 0.5], placeholder="select interval")
-counts, ticks = np.histogram(bramch_bros.CGPA, range=[0, 10], bins=int(10//interval))
+if not bramches:
+    bramches = ["ALL"]
+count_map = {}
+for b in bramches:
+    bramch_bros = data.query(f"BRANCH == @b") if b != 'ALL' else data
+    histdata = np.histogram(bramch_bros.CGPA, range=[0, 10], bins=int(10//interval))
+    count_map[b] = histdata[0]
+    ticks = histdata[1]
+    
 fig = px.bar(
-    data_frame=counts,
-    title=bramch if bramch else "ALL R20",
+    data_frame=count_map,
+    title=" & ".join(bramches) if bramches else "ALL R20",
     text_auto=True,
+    y=bramches
 )
 fig.update_traces(
-    textposition="outside",
-    hovertemplate="%{x}<extra></extra><br>%{y}"
+    hovertemplate="<br>%{x}<extra></extra><br>%{y}"
 )
 fig.update_layout(
     dragmode=False,
-    showlegend=False,
     xaxis_ticktext=[f"{ticks[i]} - {ticks[i + 1]}" for i in range(len(ticks) - 1)], 
     xaxis_tickvals=ticks * int(10 // (interval * 10)),
-    title_x = 0.5,
-    title_xref="container",
     xaxis_title="CGPA",
     yaxis_title="count",
     hoverlabel=dict(font={"size": 15})
