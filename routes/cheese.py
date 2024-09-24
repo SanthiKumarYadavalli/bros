@@ -1,5 +1,4 @@
 import streamlit as st
-import face_recognition
 import utils
 
 qmap = {
@@ -12,8 +11,6 @@ vs = st.selectbox("bros to compare with", qmap.values())
 
 if vs != qmap["Celebs"]:
     data = utils.get_data()[['enc', "GENDER", "NAME", "ID"]]
-    data.rename(columns={"enc": "ENCODINGS"}, inplace=True)
-    data.dropna(subset=["ENCODINGS"], inplace=True)
 else:
     data = utils.get_famous_bros()
 
@@ -21,12 +18,8 @@ else:
 img = st.camera_input("Take a photo")
 
 if img:
-    img = face_recognition.load_image_file(img)
-    enc = face_recognition.face_encodings(img)
-    if enc:    
-        data['DISTANCE'] = data["ENCODINGS"].apply(lambda e: face_recognition.face_distance([e], enc[0])[0])
-        mindex = data["DISTANCE"].idxmin()
-        predicted_bro = data.loc[mindex]
+    predicted_bro = utils.get_bro_from_image(img, data).iloc[0]
+    if type(predicted_bro) != int:   
         if vs == qmap["OpGender"]:
             brogender = predicted_bro['GENDER']
             data = data[data["GENDER"] == ("MALE" if brogender == "FEMALE" else "FEMALE")]

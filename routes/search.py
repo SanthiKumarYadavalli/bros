@@ -64,10 +64,15 @@ def render_input_field(selected_field):
 
 data = utils.get_data()
 today = datetime.date.today()
-search_fields = ["NAME", "ID", "PHONE", "DOB", "BRANCH",
+search_fields = ["NAME", "ID", "PHONE", "DOB", "BRANCH", "IMAGE",
                  'GENDER', "MANDAL", "DISTRICT", "CASTE", "SCHOOL", "FATHER", "MOTHER"]
 selected_fields = st.multiselect("By", search_fields, default="NAME", 
                                  placeholder="Choose some options")
+uploaded_image = False
+if "IMAGE" in selected_fields:
+    uploaded_image = True
+    selected_fields.remove("IMAGE")
+    
 col1, col2 = st.columns(2)
 nfields = len(selected_fields)
 q, r = divmod(nfields, 2)
@@ -83,6 +88,8 @@ with col2:
 if r:
     selected_map[selected_fields[-1]] = render_input_field(selected_fields[-1])
 
+if uploaded_image:
+    uploaded_image = st.file_uploader("Upload an Image")
 
 queries = []
 for selected_field, selected_value in selected_map.items():
@@ -93,8 +100,15 @@ for selected_field, selected_value in selected_map.items():
     queries.append(f"({selected_field} == '{selected_value}')")
 query = "&".join(queries)
 
-if query:        
-    bros_data = data.query(query).reset_index(drop=True)
-    bros_data.index += 1
-    render_results(bros_data)
-    
+if query or uploaded_image:    
+    bros_data = data
+    if query:    
+        bros_data = bros_data.query(query)
+    if uploaded_image:
+        bros_data = utils.get_bro_from_image(uploaded_image, bros_data)
+    if type(bros_data) != int:
+        bros_data = bros_data.reset_index()
+        bros_data.index += 1
+        render_results(bros_data)
+    else:
+        st.write("No face detected in the uploaded image.")

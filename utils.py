@@ -5,7 +5,7 @@ import requests
 import streamlit as st
 import pandas as pd
 import joblib
-import json
+import face_recognition
 
 pd.options.mode.copy_on_write = True
 IMAGE_URL = "https://raw.githubusercontent.com/pythonista69/r20/main/images/"
@@ -146,5 +146,17 @@ def get_name_counts():
         sorted(freq_by_subname.items(), key=lambda x: x[1])[::-1],
         list(freq_by_char.items())
     )
-    
 
+
+def get_bro_from_image(img, data):
+    """Predicts a bro from a image using face_recognition"""
+    data.rename(columns={"enc": "ENCODINGS"}, inplace=True)
+    data.dropna(subset=["ENCODINGS"], inplace=True)
+    img = face_recognition.load_image_file(img)
+    enc = face_recognition.face_encodings(img)
+    if enc:
+        data['DISTANCE'] = data["ENCODINGS"].apply(lambda e: face_recognition.face_distance([e], enc[0])[0])
+        mindex = data["DISTANCE"].idxmin()
+        predicted_bro = data.loc[mindex:mindex]
+        return predicted_bro
+    return -1
