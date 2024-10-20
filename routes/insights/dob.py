@@ -21,31 +21,35 @@ st.divider()
 
 # --- Birthday count ---
 st.subheader("Birthday count")
-st.write("Let's check out how many birthdays fall in a time range")
+st.write("Check out how many birthdays fall within a time range")
 
 dobs = data["DOB"]
-date_formats = {
+date_formats = {  # keys are display options and values are strftime formats
     "Year": "%Y",
     "Month": "%b",
-    "Day": "%a",
+    "Day": "%d",
+    "WeekDay": "%a",
     "Year-Month": "%Y-%b"
 }
 months = [
     "Jan", "Feb", "Mar", "Apr", "May", "Jun",
     "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
 ]
-days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
 years = sorted(dobs.dt.strftime("%Y").unique())
 order = {
     "Year": years,
     "Month": months,
-    "Day": days,
+    "Day": [str(i).zfill(2) for i in range(1, 32)],
+    "WeekDay": weekdays,
     "Year-Month": ["-".join(p) for p in product(years, months)]
 }
 
 how = st.selectbox("By", date_formats.keys())
-counts = dobs.dt.strftime(
-date_formats[how]).value_counts().rename_axis(how).reset_index()
+# format datetimes then count
+counts = dobs.dt.strftime(date_formats[how]) \
+        .value_counts().rename_axis(how).reset_index()
+# plotting
 fig = px.bar(
     data_frame=counts,
     x=how,
@@ -61,6 +65,8 @@ fig.update_traces(
 )
 fig.update_layout(
     dragmode=False,
+    xaxis_tickvals=order[how],
+    xaxis_ticktext=order[how],
     showlegend=how == "Year-Month",
     hovermode='closest' if how == "Year-Month" else False
 )
