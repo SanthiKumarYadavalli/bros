@@ -148,15 +148,17 @@ def get_name_counts():
     )
 
 
-def get_bro_from_image(img, data):
-    """Predicts a bro from a image using face_recognition"""
+def get_bro_from_image(img, data: pd.DataFrame):
+    """Predicts a bro from a image using face_recognition
+    @param img: image file
+    @param data: dataframe containing 'enc' column of face_encodings
+    """
     data.rename(columns={"enc": "ENCODINGS"}, inplace=True)
-    data.dropna(subset=["ENCODINGS"], inplace=True)
+    data.dropna(subset=["ENCODINGS"], inplace=True)  
     img = face_recognition.load_image_file(img)
     enc = face_recognition.face_encodings(img)
     if enc:
         data['DISTANCE'] = data["ENCODINGS"].apply(lambda e: face_recognition.face_distance([e], enc[0])[0])
         mindex = data["DISTANCE"].idxmin()
-        predicted_bro = data.loc[mindex:mindex]
-        return predicted_bro
-    return -1
+        return data.loc[mindex].to_dict()  # a dataframe containing the predicted bro in a single row
+    # returns None if no face is detected
