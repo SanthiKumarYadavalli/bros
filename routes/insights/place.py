@@ -5,7 +5,6 @@ import utils
 data = utils.get_data()
 
 st.subheader("No. of Students by District and ...")
-data.loc[1093, 'MANDAL'] = 'BANGLORE'
 vs = st.selectbox("and?", ["MANDAL", "GENDER"])
 fig = px.sunburst(data, path=["DISTRICT", vs], width=800, height=800)
 fig.update_traces(
