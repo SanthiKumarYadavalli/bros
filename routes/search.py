@@ -29,9 +29,9 @@ def render_results(bros_data):
 
         with col2:  # details col
             cols = [
-                'ID', 'GENDER', 'DOB', 'AGE', 'BRAMCH', 'FATHER', 'MOTHER', 'CASTE',
+                'ID', 'GENDER', 'DOB', 'AGE', 'BRANCH', 'FATHER', 'MOTHER', 'CASTE',
                 'MANDAL', 'DISTRICT', 'SCHOOL', 'PHONE', 'Parent',
-                'BLOOD GROUP', 'ADDRESS', 'CGPA', 'RAMK'
+                'BLOOD GROUP', 'ADDRESS', 'CGPA', 'RANK'
             ]
             display_df = bro_data[cols]
             display_df["DOB"] = display_df["DOB"].strftime("%d %B %Y")
