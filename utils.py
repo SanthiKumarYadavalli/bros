@@ -14,10 +14,10 @@ DEFAULT_LAYOUT = dict(
     hovermode=False,
     showlegend=False
 )
-today = datetime.date.today()
 
 
 def calculate_age(dob):
+    today = datetime.date.today()
     return (today.year - dob.year - ((dob.month, dob.day) > (today.month, today.day)))
 
 
