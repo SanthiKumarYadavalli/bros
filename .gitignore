@@ -1,7 +1,8 @@
 .ipynb_checkpoints/
 venv/
 test.ipynb
-__pycache__/
+**/__pycache__/
 updated.csv
 .vscode/
 TODO.txt
+.env

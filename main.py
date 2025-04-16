@@ -11,7 +11,10 @@ pg = st.navigation({
     ],
     "Fun": [
         st.Page("routes/flames.py", title="Flames", icon="🔥"),
-        st.Page("routes/cheese.py", title="Cheese", icon="🐗")
-    ]
+        st.Page("routes/cheese.py", title="Smile", icon="🐗")
+    ],
+    "Chat": [
+        st.Page("routes/chat.py", title="Chat", icon="💬"),
+    ],
 })
 pg.run() 
