@@ -1,5 +1,5 @@
 import streamlit as st
-from gemini.agent import send_message
+from gemini.agent import initialize_chat, send_message
 import time
 import random
 
@@ -11,6 +11,9 @@ if "messages" not in st.session_state:
     st.session_state.messages.append(
         {"role": "assistant", "content": "Hey there!"}
     )
+
+if 'chat' not in st.session_state:
+    st.session_state.chat = initialize_chat()
 
 # --- Display Chat History ---
 for message in st.session_state.messages:
@@ -30,7 +33,7 @@ if prompt := st.chat_input("What can I help you with?"):
         full_response = ""
         message_placeholder.markdown("<p style='color: lightgreen'>Thinking...</p>", unsafe_allow_html=True)
 
-        for chunk in send_message(prompt).split(' '):
+        for chunk in send_message(st.session_state.chat, prompt).split(' '):
             full_response += chunk + " "
             message_placeholder.markdown(full_response + "▌")
             time.sleep(random.uniform(0.05, 0.2))  # Simulate typing delay

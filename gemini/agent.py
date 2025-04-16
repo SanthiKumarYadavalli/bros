@@ -10,10 +10,11 @@ load_dotenv()
 
 df_info = """
 This is a DataFrame you know:
+Beware that the data contains NaN values.
    Column              Dtype    Description     
    ------              -----    -----     
    ID                  object  (in the format 'R20XXXX' X are digits)
-   NAME                object  (Name of the student)
+   NAME                object  (Name of the student, all-caps)
    GENDER              object  ('MALE' and 'FEMALE' are possible values)
    CET HT NO.          int64   (cet hall ticket number)     
    pucbranch           object  (PUC is a course that we study before engineering. 'M.P.C' and 'M.Bi.P.C' are possible values)     
@@ -25,11 +26,10 @@ This is a DataFrame you know:
    FATHER              object        
    MANDAL              object        
    DISTRICT            object        
-   SCHOOL              object        
-   PHONE2              int64         
+   SCHOOL              object                
    SSC                 int64         
    SSC BOARD           object        
-   PHONE               object        
+   PHONE               object  (phone number)   
    MOTHER              object        
    BLOOD GROUP         object        
    Parent              object    (parent phone number)    
@@ -85,12 +85,15 @@ generate_content_config = types.GenerateContentConfig(
     ],
 )
 
-chat =  client.chats.create(model=model, config=generate_content_config)
-chat.send_message(
-    base_prompt,
-    config=generate_content_config
-)
+
+def initialize_chat():
+    chat = client.chats.create(model=model, config=generate_content_config)
+    chat.send_message(
+        base_prompt,
+        config=generate_content_config
+    )
+    return chat
 
 
-def send_message(prompt):
+def send_message(chat, prompt):
     return chat.send_message(prompt, config=generate_content_config).text
