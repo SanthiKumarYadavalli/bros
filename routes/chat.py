@@ -3,7 +3,7 @@ from gemini.agent import send_message
 import time
 import random
 
-st.title("Chat with Samantha") 
+st.title("Let's chat!") 
 
 # --- Session State Initialization ---
 if "messages" not in st.session_state:
