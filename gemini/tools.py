@@ -29,7 +29,7 @@ def get_info_from_data(code_str: str) -> Any:
         if isinstance(result, pd.DataFrame):
             result = result.map(str).to_dict(orient='records')
         elif isinstance(result, pd.Series):
-            result = result.tolist()
+            result = result.map(str).tolist()
         elif isinstance(result, (int, float, str)):
             result = str(result)
         elif result is None:
