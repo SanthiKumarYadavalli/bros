@@ -9,7 +9,10 @@ st.title("Let's chat!")
 if "messages" not in st.session_state:
     st.session_state.messages = []
     st.session_state.messages.append(
-        {"role": "assistant", "content": "Hey there!"}
+        {
+            "role": "assistant",
+            "content": "Hey! 😄 I know all the R20 student stuff —  got questions or need some charts? Let’s go! 📊✨"
+        }
     )
 
 if 'chat' not in st.session_state:
@@ -20,6 +23,8 @@ for message in st.session_state.messages:
     avatar = "🧑‍💻" if message["role"] == "user" else "✨"
     with st.chat_message(message["role"], avatar=avatar):
         st.markdown(message["content"])
+        if message.get("chart"):
+            st.plotly_chart(message["chart"], use_container_width=True)
 
 # --- Handle User Input ---
 if prompt := st.chat_input("What can I help you with?"):
@@ -40,4 +45,8 @@ if prompt := st.chat_input("What can I help you with?"):
         message_placeholder.markdown(full_response)
 
 
-    st.session_state.messages.append({"role": "assistant", "content": full_response})
+    if st.session_state.messages[-1]["role"] == "assistant":  # If the last message was from the assistant, update it
+        st.session_state.messages[-1]["content"] = full_response
+    else:
+        st.session_state.messages.append({"role": "assistant", "content": full_response})
+    st.rerun()  # Rerun to update the chart display

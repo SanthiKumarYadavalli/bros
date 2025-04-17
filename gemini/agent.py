@@ -2,7 +2,7 @@ from google.genai import types
 from dotenv import load_dotenv
 from google import genai
 import os
-from .tools import get_info_from_data
+from .tools import get_info_from_data, generate_plotly_chart
 
 
 load_dotenv()
@@ -22,13 +22,13 @@ Beware that the data contains NaN values.
    CASTE               object  ('OC', 'SC', 'ST', 'EWS', 'BC-A', 'BC-B', 'BC-C', 'BC-D', 'BC-E' are possible values)    
    Class(p2)           object        
    DOB                 datetime64[ns]  (Date of Birth)
-   BRANCH              object  (Just like majors. possible values are (CSE, ECE, CHEM, CIVIL, MME, EEE, MECH))
+   BRANCH              object  (Just like majors. engineering branches. possible values are (CSE, ECE, CHEM, CIVIL, MME, EEE, MECH))
    FATHER              object        
    MANDAL              object        
    DISTRICT            object        
    SCHOOL              object                
-   SSC                 int64         
-   SSC BOARD           object        
+   SSC                 int64   (ssc hall ticket number)      
+   SSC BOARD           object  (10th class or high school board)     
    PHONE               object  (phone number)   
    MOTHER              object        
    BLOOD GROUP         object        
@@ -38,7 +38,7 @@ Beware that the data contains NaN values.
    e1sem2              float64   (GPA in E2 SEM2)
    e2sem1              float64   (GPA in E2 SEM1)   
    e2sem2              float64   (GPA in E2 SEM2)
-   CGPA                float64             
+   CGPA                float64   (CGPA of Engineering excluding PUC)         
    Formatted address   object        
    Latitude            float64       
    Longitude           float64              
@@ -66,6 +66,7 @@ Age: 25
 
 You can find hidden insights and information from the dataframe by running some pandas code.
 If you feel like the user is asking something related to the students data, run the code and provide response right away.
+You can also run python's plotly code to generate charts and graphs.
 This is your DataFrame:
 {df_info}
 """
@@ -79,7 +80,7 @@ generate_content_config = types.GenerateContentConfig(
     top_k=40,
     max_output_tokens=8192,
     response_mime_type="text/plain",
-    tools=[get_info_from_data],
+    tools=[get_info_from_data, generate_plotly_chart],
     system_instruction=[
         types.Part.from_text(text="""give short responses playfully like in a chat."""),
     ],
