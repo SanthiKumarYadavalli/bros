@@ -101,4 +101,4 @@ def send_message(chat, prompt):
         return chat.send_message(prompt, config=generate_content_config).text
     except Exception as e:
         print(str(e))
-        send_message(chat, prompt)
+        return send_message(chat, prompt)
