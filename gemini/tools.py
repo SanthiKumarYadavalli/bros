@@ -44,7 +44,7 @@ def get_info_from_data(code_str: str) -> Any:
 
     except Exception as e:
         print(f"Error executing code: {e}")
-        return "Error"
+        return {"Error": str(e)}
 
 
 
