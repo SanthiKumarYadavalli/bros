@@ -13,7 +13,7 @@ if delta[day] != 0:  # Not today
 
 ret = st.dataframe(
     birthdays,
-    use_container_width=True,
+    width="stretch",
     hide_index=True,
     column_config={
         "WhatsApp": st.column_config.LinkColumn(display_text="Wish Them!"),

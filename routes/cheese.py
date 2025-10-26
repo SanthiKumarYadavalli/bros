@@ -32,7 +32,7 @@ if img:
             st.header(f"You're{' looking like ' if not selected['all'] else ' '}:blue[{predicted_bro['NAME'].title()}]")
         with col2:
             if not selected["pop"]:
-                st.image(utils.get_image(predicted_bro['ID']))
+                st.image(utils.get_image(predicted_bro['ID'])[0])
             else:
                 st.link_button("Who?", f"https://www.google.com/search?q={predicted_bro['NAME']}")
     else:

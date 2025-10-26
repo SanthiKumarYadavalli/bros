@@ -2,13 +2,16 @@ import streamlit as st
 import utils
 import datetime
 
+if not st.session_state.get("image_serial"):
+    st.session_state.image_serial = 0
+
 
 def render_results(bros_data):
     one_bro = bros_data.shape[0] == 1
     if not one_bro:
         bros_list = st.dataframe(
             bros_data[['IMG', 'ID', 'NAME', 'PHONE', 'BRANCH']], 
-            use_container_width=True,
+            width="stretch",
             on_select="rerun",
             selection_mode="single-row",
             hide_index=True,
@@ -20,12 +23,20 @@ def render_results(bros_data):
     # result is one bro or user selected a bro from the dataframe
     if one_bro or len(bros_list.selection.rows):
         bro_data = bros_data.iloc[0 if one_bro else bros_list.selection.rows[0]]
-        st.subheader(bro_data['NAME'], divider="rainbow")
+        col1, col2 = st.columns([0.93, 0.07], gap=None, vertical_alignment="center")
+        with col1:
+            st.subheader(bro_data['NAME'], width="content")
+        with col2:
+            if st.button("💜"):
+                st.session_state.image_serial += 1
+                st.rerun()
         col1, col2 = st.columns(2, gap="large", vertical_alignment="center")
         bro_data.name = ""  # hide table header
 
         with col1:  # image col
-            st.image(utils.get_image(bro_data['ID']))
+            image, serial = utils.get_image(bro_data['ID'], st.session_state.image_serial)
+            st.session_state.image_serial = serial
+            st.image(image)
 
         with col2:  # details col
             cols = [
@@ -35,7 +46,7 @@ def render_results(bros_data):
             ]
             display_df = bro_data[cols]
             display_df["DOB"] = display_df["DOB"].strftime("%d %B %Y")
-            st.dataframe(display_df.dropna().astype(str), use_container_width=True)
+            st.dataframe(display_df.dropna().astype(str), width="stretch")
 
         # BIRTHDAY BRO
         if bro_data['DOB'].month == today.month and bro_data['DOB'].day == today.day:
@@ -45,12 +56,12 @@ def render_results(bros_data):
             st.link_button(
                 ":green[Whatsapp]",
                 f"https://wa.me/+91{bro_data.PHONE}",
-                use_container_width=True
+                width="stretch"
             )
             st.link_button(
                 ":blue[Call]",
                 f"tel:{bro_data.PHONE}",
-                use_container_width=True
+                width="stretch"
             )
 
 

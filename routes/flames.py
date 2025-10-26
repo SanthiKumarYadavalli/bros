@@ -65,7 +65,7 @@ with tab2:
             selected_bros = groups.get_group(selected)
             
             st.subheader("Your " + selected)
-            st.dataframe(selected_bros[["NAME", "BRANCH"]], hide_index=True, use_container_width=True)
+            st.dataframe(selected_bros[["NAME", "BRANCH"]], hide_index=True, width="stretch")
 
 
 def display_records(data, col, maximum=True):

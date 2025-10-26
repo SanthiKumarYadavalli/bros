@@ -5,7 +5,7 @@ import requests
 import streamlit as st
 import pandas as pd
 import joblib
-import face_recognition
+# import face_recognition
 
 pd.options.mode.copy_on_write = True
 IMAGE_URL = "https://raw.githubusercontent.com/pythonista69/r20/main/images/"
@@ -37,10 +37,14 @@ def get_famous_bros():
 
 # GET image
 @st.cache_data
-def get_image(ID):
-    res = requests.get(f"{IMAGE_URL}{ID}.jpg")
-    return res.content if res.ok else IMAGE_URL + "not_found.jpg"
-
+def get_image(ID, serial=0):
+    res = requests.get(f"{IMAGE_URL}/{ID}/{serial}.jpg")
+    if not res.ok:
+        res = requests.get(f"{IMAGE_URL}/{ID}/0.jpg")
+        serial = 0
+    if not res.ok:
+        res = requests.get(f"{IMAGE_URL}/{ID}/not_found/0.jpg")
+    return res.content, serial
 
 # GET birthday's info
 def get_birthdays(data, date):
