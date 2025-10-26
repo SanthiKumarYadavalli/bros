@@ -5,10 +5,10 @@ import requests
 import streamlit as st
 import pandas as pd
 import joblib
-# import face_recognition
+import face_recognition
 
 pd.options.mode.copy_on_write = True
-IMAGE_URL = "https://raw.githubusercontent.com/pythonista69/r20/main/images/"
+IMAGE_URL = "https://raw.githubusercontent.com/pythonista69/r20/main/images"
 DEFAULT_LAYOUT = dict(
     dragmode=False,
     hovermode=False,
@@ -26,7 +26,7 @@ def calculate_age(dob):
 def get_data():
     data = joblib.load("data")
     data['AGE'] = data["DOB"].apply(calculate_age)
-    data["IMG"] = data["ID"].apply(lambda x: f"{IMAGE_URL}{x}.jpg")
+    data["IMG"] = data["ID"].apply(lambda x: f"{IMAGE_URL}/{x}/0.jpg")
     return data
 
 
