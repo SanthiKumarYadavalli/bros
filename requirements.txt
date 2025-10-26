@@ -60,8 +60,6 @@ pydeck==0.9.1
 Pygments==2.18.0
 python-dateutil==2.9.0.post0
 python-dotenv==1.1.0
-pytz==2024.1
-pywin32==308
 pyzmq==26.2.1
 referencing==0.35.1
 requests==2.32.3
