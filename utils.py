@@ -166,3 +166,13 @@ def get_bro_from_image(img, data: pd.DataFrame):
         mindex = data["DISTANCE"].idxmin()
         return data.loc[mindex].to_dict()  # a dictionary containing the predicted bro
     # returns None if no face is detected
+
+
+def get_bro_from_image_url(img_url, data: pd.DataFrame):
+    """Predicts a bro from a image URL using face_recognition
+    @param img_url: image URL
+    @param data: dataframe containing 'enc' column of face_encodings
+    """
+    res = requests.get(img_url)
+    if res.ok:
+        return get_bro_from_image(res.content, data)

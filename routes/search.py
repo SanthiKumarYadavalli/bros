@@ -79,9 +79,10 @@ search_fields = ["NAME", "ID", "PHONE", "DOB", "BRANCH", "IMAGE",
                  'GENDER', "MANDAL", "DISTRICT", "CASTE", "SCHOOL", "FATHER", "MOTHER"]
 selected_fields = st.multiselect("By", search_fields, default="NAME", 
                                  placeholder="Choose some options")
-uploaded_image = False
+is_search_by_image = False
+uploaded_image = None
 if "IMAGE" in selected_fields:
-    uploaded_image = True
+    is_search_by_image = True
     selected_fields.remove("IMAGE")
     
 col1, col2 = st.columns(2)
@@ -99,8 +100,9 @@ with col2:
 if r:
     selected_map[selected_fields[-1]] = render_input_field(selected_fields[-1])
 
-if uploaded_image:
+if is_search_by_image:
     uploaded_image = st.file_uploader("Upload an Image")
+    image_url = st.text_input("Or provide Image URL")
 
 queries = []
 for selected_field, selected_value in selected_map.items():
@@ -111,17 +113,22 @@ for selected_field, selected_value in selected_map.items():
     queries.append(f"({selected_field} == '{selected_value}')")
 query = "&".join(queries)
 
-if query or uploaded_image:    
+if query or uploaded_image:
     bros_data = data
     if query:    
         bros_data = bros_data.query(query)
+
+    predicted_bro = None
     if uploaded_image:
         predicted_bro = utils.get_bro_from_image(uploaded_image, bros_data)
-        if predicted_bro:
-            bros_data = bros_data[bros_data["ID"] == predicted_bro['ID']]
-        else:
-            bros_data = bros_data.iloc[0:0]
-            st.write("No face detected in the uploaded image.")
+    if image_url:
+        predicted_bro = utils.get_bro_from_image_url(image_url, bros_data)
+    if predicted_bro:
+        bros_data = bros_data[bros_data["ID"] == predicted_bro['ID']]
+    else:
+        bros_data = bros_data.iloc[0:0]
+        st.write("No face detected in the uploaded image.")
+
     bros_data = bros_data.reset_index()
     bros_data.index += 1
     render_results(bros_data)
