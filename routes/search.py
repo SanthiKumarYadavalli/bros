@@ -80,7 +80,6 @@ search_fields = ["NAME", "ID", "PHONE", "DOB", "BRANCH", "IMAGE",
 selected_fields = st.multiselect("By", search_fields, default="NAME", 
                                  placeholder="Choose some options")
 is_search_by_image = False
-uploaded_image = None
 if "IMAGE" in selected_fields:
     is_search_by_image = True
     selected_fields.remove("IMAGE")
@@ -100,6 +99,8 @@ with col2:
 if r:
     selected_map[selected_fields[-1]] = render_input_field(selected_fields[-1])
 
+uploaded_image = None
+image_url = None
 if is_search_by_image:
     uploaded_image = st.file_uploader("Upload an Image")
     image_url = st.text_input("Or provide Image URL")
