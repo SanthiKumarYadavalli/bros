@@ -116,19 +116,20 @@ query = "&".join(queries)
 
 if query or uploaded_image:
     bros_data = data
-    if query:    
+    if query:
         bros_data = bros_data.query(query)
 
-    predicted_bro = None
-    if uploaded_image:
-        predicted_bro = utils.get_bro_from_image(uploaded_image, bros_data)
-    if image_url:
-        predicted_bro = utils.get_bro_from_image_url(image_url, bros_data)
-    if predicted_bro:
-        bros_data = bros_data[bros_data["ID"] == predicted_bro['ID']]
-    else:
-        bros_data = bros_data.iloc[0:0]
-        st.write("No face detected in the uploaded image.")
+    if uploaded_image or image_url:
+        predicted_bro = None
+        if uploaded_image:
+            predicted_bro = utils.get_bro_from_image(uploaded_image, bros_data)
+        if image_url:
+            predicted_bro = utils.get_bro_from_image_url(image_url, bros_data)
+        if predicted_bro:
+            bros_data = bros_data[bros_data["ID"] == predicted_bro['ID']]
+        else:
+            bros_data = bros_data.iloc[0:0]
+            st.write("No face detected in the uploaded image.")
 
     bros_data = bros_data.reset_index()
     bros_data.index += 1
