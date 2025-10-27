@@ -23,7 +23,7 @@ def calculate_age(dob):
 
 # to retrieve data
 @st.cache_data
-def get_data():
+def get_data() -> pd.DataFrame:
     data = joblib.load("data")
     data['AGE'] = data["DOB"].apply(calculate_age)
     data["IMG"] = data["ID"].apply(lambda x: f"{IMAGE_URL}/{x}/0.jpg")
@@ -164,5 +164,5 @@ def get_bro_from_image(img, data: pd.DataFrame):
     if enc:
         data['DISTANCE'] = data["ENCODINGS"].apply(lambda e: face_recognition.face_distance([e], enc[0])[0])
         mindex = data["DISTANCE"].idxmin()
-        return data.loc[mindex].to_dict()  # a dataframe containing the predicted bro in a single row
+        return data.loc[mindex].to_dict()  # a dictionary containing the predicted bro
     # returns None if no face is detected
