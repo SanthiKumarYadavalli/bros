@@ -117,8 +117,11 @@ if query or uploaded_image:
         bros_data = bros_data.query(query)
     if uploaded_image:
         predicted_bro = utils.get_bro_from_image(uploaded_image, bros_data)
-        bros_data = bros_data[bros_data["ID"] == predicted_bro['ID']] if predicted_bro else bros_data.iloc[0:0]
-        st.write("No face detected in the uploaded image.")
+        if predicted_bro:
+            bros_data = bros_data[bros_data["ID"] == predicted_bro['ID']]
+        else:
+            bros_data = bros_data.iloc[0:0]
+            st.write("No face detected in the uploaded image.")
     bros_data = bros_data.reset_index()
     bros_data.index += 1
     render_results(bros_data)
