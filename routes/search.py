@@ -114,7 +114,7 @@ for selected_field, selected_value in selected_map.items():
     queries.append(f"({selected_field} == '{selected_value}')")
 query = "&".join(queries)
 
-if query or uploaded_image:
+if query or is_search_by_image:
     bros_data = data
     if query:
         bros_data = bros_data.query(query)
