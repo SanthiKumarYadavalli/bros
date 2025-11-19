@@ -83,7 +83,8 @@ is_search_by_image = False
 if "IMAGE" in selected_fields:
     is_search_by_image = True
     selected_fields.remove("IMAGE")
-    
+
+# Render input fields in two columns
 col1, col2 = st.columns(2)
 nfields = len(selected_fields)
 q, r = divmod(nfields, 2)
@@ -91,20 +92,20 @@ selected_map = {}
 with col1:
     for i in range(0, nfields - r, 2):
         selected_map[selected_fields[i]] = render_input_field(selected_fields[i])
-
 with col2:
     for i in range(1, nfields, 2):
         selected_map[selected_fields[i]] = render_input_field(selected_fields[i]) 
-               
 if r:
     selected_map[selected_fields[-1]] = render_input_field(selected_fields[-1])
 
+# Image search inputs
 uploaded_image = None
 image_url = None
 if is_search_by_image:
     uploaded_image = st.file_uploader("Upload an Image")
     image_url = st.text_input("Or provide Image URL")
 
+# Build query
 queries = []
 for selected_field, selected_value in selected_map.items():
     if not selected_value:
@@ -114,23 +115,21 @@ for selected_field, selected_value in selected_map.items():
     queries.append(f"({selected_field} == '{selected_value}')")
 query = "&".join(queries)
 
-if query or is_search_by_image:
-    bros_data = data
-    if query:
-        bros_data = bros_data.query(query)
 
-    if uploaded_image or image_url:
-        predicted_bro = None
-        if uploaded_image:
-            predicted_bro = utils.get_bro_from_image(uploaded_image, bros_data)
-        if image_url:
-            predicted_bro = utils.get_bro_from_image_url(image_url, bros_data)
-        if predicted_bro:
-            bros_data = bros_data[bros_data["ID"] == predicted_bro['ID']]
-        else:
-            bros_data = bros_data.iloc[0:0]
-            st.write("No face detected in the uploaded image.")
-
-    bros_data = bros_data.reset_index()
+# Execute search
+if query:
+    bros_data = data.query(query).reset_index()
     bros_data.index += 1
     render_results(bros_data)
+elif uploaded_image:
+    if (predicted_bro := utils.get_bro_from_image(uploaded_image, data)):
+        bros_data = data[data["ID"] == predicted_bro['ID']]
+        render_results(bros_data)
+    else:
+        st.write("No face detected in the uploaded image.")
+elif image_url:
+    if (predicted_bro := utils.get_bro_from_image_url(image_url, data)):
+        bros_data = data[data["ID"] == predicted_bro['ID']]
+        render_results(bros_data)
+    else:
+        st.write("No face detected in the uploaded image.")

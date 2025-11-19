@@ -1,5 +1,6 @@
 from collections import Counter, defaultdict
 from string import ascii_lowercase, ascii_uppercase
+from io import BytesIO
 import datetime
 import requests
 import streamlit as st
@@ -43,7 +44,7 @@ def get_image(ID, serial=0):
         res = requests.get(f"{IMAGE_URL}/{ID}/0.jpg")
         serial = 0
     if not res.ok:
-        res = requests.get(f"{IMAGE_URL}/{ID}/not_found/0.jpg")
+        res = requests.get(f"{IMAGE_URL}/not_found/0.jpg")
     return res.content, serial
 
 # GET birthday's info
@@ -175,4 +176,4 @@ def get_bro_from_image_url(img_url, data: pd.DataFrame):
     """
     res = requests.get(img_url)
     if res.ok:
-        return get_bro_from_image(res.content, data)
+        return get_bro_from_image(BytesIO(res.content), data)
