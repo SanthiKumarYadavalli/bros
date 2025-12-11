@@ -5,7 +5,7 @@ import datetime
 import requests
 import streamlit as st
 import pandas as pd
-import joblib
+import pickle
 import face_recognition
 
 pd.options.mode.copy_on_write = True
@@ -25,7 +25,8 @@ def calculate_age(dob):
 # to retrieve data
 @st.cache_data
 def get_data() -> pd.DataFrame:
-    data = joblib.load("data")
+    with open("data.pkl", "rb") as f:
+        data = pickle.load(f)
     data['AGE'] = data["DOB"].apply(calculate_age)
     data["IMG"] = data["ID"].apply(lambda x: f"{IMAGE_URL}/{x}/0.jpg")
     return data
@@ -33,7 +34,9 @@ def get_data() -> pd.DataFrame:
 
 @st.cache_data
 def get_famous_bros():
-    return joblib.load("famousbros")
+    with open("famousbros.pkl", "rb") as f:
+        data = pickle.load(f)
+    return data
 
 
 # GET image
