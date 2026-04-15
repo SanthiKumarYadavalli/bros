@@ -6,7 +6,7 @@ import requests
 import streamlit as st
 import pandas as pd
 import pickle
-import face_recognition
+# import face_recognition
 
 pd.options.mode.copy_on_write = True
 IMAGE_URL = "https://raw.githubusercontent.com/pythonista69/r20/main/images"
