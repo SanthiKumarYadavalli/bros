@@ -14,8 +14,8 @@ debugpy==1.8.12
 decorator==5.2.1
 dlib-bin==19.24.2.post1
 executing==2.2.0
-face_recognition @ git+https://github.com/thetoby9944/face_recognition@d632e2e8d5b5b286d944c333f3ff4433dafabb19
-face_recognition_models==0.3.0
+# face_recognition @ git+https://github.com/thetoby9944/face_recognition@d632e2e8d5b5b286d944c333f3ff4433dafabb19
+# face_recognition_models==0.3.0
 geographiclib==2.0
 geopy==2.4.1
 gitdb==4.0.11
