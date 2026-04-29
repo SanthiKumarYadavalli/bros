@@ -9,8 +9,7 @@ attribute_module_map = {
     "GPA": "gpa"
 }
 
-st.write("Here, You will uncover hidden truths that lie within the data")
-st.write("First, choose an attribute")
+st.write("Choose an attribute")
 selected_attr = st.selectbox("Attribute", attribute_module_map.keys(), index=None)
 st.divider()
 
