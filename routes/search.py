@@ -40,8 +40,8 @@ def render_results(bros_data):
 
         with col2:  # details col
             cols = [
-                'ID', 'GENDER', 'DOB', 'AGE', 'BRANCH', 'FATHER', 'MOTHER', 'CASTE',
-                'MANDAL', 'DISTRICT', 'SCHOOL', 'PHONE', 'Parent',
+                'ID', 'GENDER', 'DOB', 'AGE', 'BRANCH', 'Class(p1)', 'Class(p2)', 'FATHER', 'MOTHER', 'CASTE',
+                'MANDAL', 'DISTRICT', 'SCHOOL', 'PHONE', 'PHONE2', 'Parent',
                 'BLOOD GROUP', 'SSC', 'ADDRESS', 'CGPA'
             ]
             display_df = bro_data[cols]
