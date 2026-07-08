@@ -10,7 +10,7 @@ data = utils.get_data()
 
 st.subheader("SGPA Line Chart", divider="red")
 st.write("Enter your name or id to get your chart")
-gpa_cols = list(filter(lambda x: re.match("(p|e)\dsem\d", x), data.columns))
+gpa_cols = list(filter(lambda x: re.match(r"(p|e)\dsem\d", x), data.columns))
 gpa_cols.sort(key=lambda x: x[0] == 'e')  # p comes before e
 gpa_df = data[["ID", "NAME"] + gpa_cols]
 gpa_df = gpa_df.dropna()
