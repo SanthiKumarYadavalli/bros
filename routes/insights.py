@@ -1,20 +1,21 @@
-import importlib
-import sys
 import streamlit as st
+from routes.insights import (
+    gpa,
+    name,
+    dob,
+    place,
+    leaderboard
+)
 
 attribute_module_map = {
-    "Names": "name",
-    "Birthdays": "dob",
-    "Place": "place",
-    "GPA": "gpa"
+    "Leaderboard": leaderboard,
+    "GPA": gpa,
+    "Names": name,
+    "Birthdays": dob,
+    "Place": place,
 }
 
-st.write("Choose an attribute")
-selected_attr = st.selectbox("Attribute", attribute_module_map.keys(), index=None)
-st.divider()
-
-if selected_attr:
-    module = attribute_module_map[selected_attr]
-    sys.modules.pop(f"routes.insights.{module}", "")
-    importlib.import_module(f"routes.insights.{module}")
-    st.caption("More to come.")
+tabs = st.tabs(list(attribute_module_map.keys()))
+for tab, title in zip(tabs, attribute_module_map.keys()):
+    with tab:
+        attribute_module_map[title].render_page()
