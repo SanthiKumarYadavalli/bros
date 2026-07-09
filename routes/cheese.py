@@ -26,11 +26,10 @@ if img:
             mindex = data["DISTANCE"].idxmin()
             predicted_bro = data.loc[mindex]
         
-        col1, col2 = st.columns(2, vertical_alignment="center")
-        with col1:
-            st.write(f"I'm {100 - round(predicted_bro['DISTANCE'] * 100, 2)}% sure that")
-            st.header(f"You're{' looking like ' if not selected['all'] else ' '}:blue[{predicted_bro['NAME'].title()}]")
+        col1, col2 = st.columns(2, vertical_alignment="center", gap="large")
         with col2:
+            st.header(f"You are{' looking like ' if not selected['all'] else ' '}:blue[{predicted_bro['NAME'].title()}]")
+        with col1:
             if not selected["pop"]:
                 st.image(utils.get_image(predicted_bro['ID'])[0])
             else:
