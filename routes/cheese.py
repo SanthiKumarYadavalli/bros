@@ -26,7 +26,8 @@ if img:
             mindex = data["DISTANCE"].idxmin()
             predicted_bro = data.loc[mindex]
         
-        col1, col2 = st.columns(2, vertical_alignment="center", gap="large")
+        cols = st.columns(2, vertical_alignment="center", gap="large")
+        col1, col2 = cols[::-1] if selected["pop"] else cols
         with col2:
             st.header(f"You are{' looking like ' if not selected['all'] else ' '}:blue[{predicted_bro['NAME'].title()}]")
         with col1:
