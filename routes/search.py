@@ -75,10 +75,27 @@ def render_input_field(selected_field):
 
 data = utils.get_data()
 today = datetime.date.today()
-search_fields = ["NAME", "ID", "PHONE", "DOB", "BRANCH", "IMAGE",
-                 'GENDER', "MANDAL", "DISTRICT", "CASTE", "SCHOOL", "FATHER", "MOTHER"]
-selected_fields = st.multiselect("By", search_fields, default="NAME", 
-                                 placeholder="Choose some options")
+search_fields = [
+    "NAME",
+    "ID",
+    "PHONE",
+    "DOB", 
+    "BRANCH",
+    "IMAGE",
+    'GENDER',
+    "MANDAL",
+    "DISTRICT",
+    "CASTE",
+    "SCHOOL",
+    "FATHER",
+    "MOTHER"
+]
+selected_fields = st.multiselect(
+    "By", 
+    search_fields,
+    default=["NAME", "ID", "PHONE"], 
+    placeholder="Choose some options"
+)
 is_search_by_image = False
 if "IMAGE" in selected_fields:
     is_search_by_image = True
