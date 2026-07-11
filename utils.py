@@ -180,3 +180,21 @@ def get_bro_from_image_url(img_url, data: pd.DataFrame):
     res = requests.get(img_url)
     if res.ok:
         return get_bro_from_image(BytesIO(res.content), data)
+    
+
+def calculate_cgpa_from_subjects(row: pd.Series) -> float:
+    """Calculates CGPA from total credits and total points earned from subjects column
+    @param row: a row of dataframe containing 'subjects' column
+    @return: calculated CGPA or None if subjects is empty or NaN
+    """
+    subjects = row["subjects"]
+    if not isinstance(subjects, list):
+        return None
+    grade_to_points_map = {"Ex": 10, "A": 9, "B": 8, "C": 7, "D": 6, "E": 5}
+    total_points = 0
+    total_credits = 0
+    for subject in subjects:
+        total_credits += subject["credit"] * 10
+        total_points += subject["credit"] * grade_to_points_map.get(subject["grade"], 0)
+    calculated_cgpa = total_points / total_credits * 10
+    return calculated_cgpa
