@@ -3,8 +3,6 @@ from gemini.agent import initialize_chat, send_message
 import time
 import random
 
-st.title("Let's chat!") 
-
 # --- Session State Initialization ---
 if "messages" not in st.session_state:
     st.session_state.messages = []
@@ -16,7 +14,17 @@ if "messages" not in st.session_state:
     )
 
 if 'chat' not in st.session_state:
-    st.session_state.chat = initialize_chat()
+    try:
+        st.session_state.chat = initialize_chat()
+    except Exception as e:
+        if "429" in str(e):
+            st.error("Error initializing chat: Rate limit exceeded. Need money 💵")
+        else:
+            st.error(f"Error initializing chat: {e}")
+        st.stop()
+
+
+st.title("Let's chat!")
 
 # --- Display Chat History ---
 for message in st.session_state.messages:
