@@ -15,6 +15,11 @@ DEFAULT_LAYOUT = dict(
     hovermode=False,
     showlegend=False
 )
+SEMESTER_COLS = [
+    "e1sem1", "e1sem2", "e2sem1", "e2sem2",
+    "e3sem1", "e3sem2", "e4sem1", "e4sem2"
+]
+GRADE_TO_POINTS_MAP = {"Ex": 10, "A": 9, "B": 8, "C": 7, "D": 6, "E": 5}
 
 
 def calculate_age(dob):
@@ -182,19 +187,32 @@ def get_bro_from_image_url(img_url, data: pd.DataFrame):
         return get_bro_from_image(BytesIO(res.content), data)
     
 
-def calculate_cgpa_from_subjects(row: pd.Series) -> float:
-    """Calculates CGPA from total credits and total points earned from subjects column
+def calculate_gpa_from_subjects(row: pd.Series, sem: str, sgpa_or_cgpa: str) -> float:
+    """Calculates CGPA or SGPA from total credits and total points earned from subjects column
+    SGPA is calculated for a specific semester, 
+    while CGPA is calculated for all semesters up to the specified semester.
     @param row: a row of dataframe containing 'subjects' column
+    @param sem: the semester for which to calculate CGPA or SGPA. Format: "eXsemY"
+    @param sgpa_or_cgpa: whether to calculate SGPA or CGPA
     @return: calculated CGPA or None if subjects is empty or NaN
     """
     subjects = row["subjects"]
     if not isinstance(subjects, list):
         return None
-    grade_to_points_map = {"Ex": 10, "A": 9, "B": 8, "C": 7, "D": 6, "E": 5}
+    year_num = int(sem[1])
+    sem_num = int(sem[-1])
+    sem_index = (year_num - 1) * 2 + (sem_num - 1)
     total_points = 0
     total_credits = 0
     for subject in subjects:
-        total_credits += subject["credit"] * 10
-        total_points += subject["credit"] * grade_to_points_map.get(subject["grade"], 0)
-    calculated_cgpa = total_points / total_credits * 10
-    return calculated_cgpa
+        curr_year_num = int(subject["year"][-1])
+        curr_sem_num = int(subject["sem"][-1])
+        curr_sem_index = (curr_year_num - 1) * 2 + (curr_sem_num - 1)
+        if sgpa_or_cgpa == "cgpa" and curr_sem_index > sem_index:
+            continue
+        if sgpa_or_cgpa == "sgpa" and curr_sem_index != sem_index:
+            continue
+        total_credits += subject["credit"]
+        total_points += subject["credit"] * GRADE_TO_POINTS_MAP.get(subject["grade"], 0)
+    calculated_gpa = total_points / total_credits
+    return calculated_gpa
