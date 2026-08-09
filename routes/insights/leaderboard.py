@@ -21,11 +21,13 @@ def add_rank_column(leaderboard_data):
         "1": "🥇", "2": "🥈", "3": "🥉", "4": "4️⃣", "5": "5️⃣",
         "6": "6️⃣", "7": "7️⃣", "8": "8️⃣", "9": "9️⃣", "10": "🔟"
     }
-    leaderboard_data.insert(
-        0,
-        "RANK",
-        [medals.get(str(i), f"#{i}") for i in range(1, len(leaderboard_data) + 1)]
+    leaderboard_data["RANK"] = (
+        leaderboard_data["gpa_calculated"]
+        .rank(method="min", ascending=False)
+        .astype(int)
+        .astype(str)
     )
+    leaderboard_data["RANK"] = leaderboard_data["RANK"].apply(lambda x: medals.get(x, f"#{x}"))
 
 
 def render_page():
@@ -53,6 +55,7 @@ def render_page():
         leaderboard_data = get_leaderboard_data(gpa_type == "Cumulative (CGPA)", sem)
         leaderboard_data = leaderboard_data[leaderboard_data["BRANCH"] == branch_filter]
         add_rank_column(leaderboard_data)
+        st.write(f"{branch_filter} - {'CGPA as of ' + sem.upper() if gpa_type == 'Cumulative (CGPA)' else 'SGPA for ' + sem.upper()}")
         st.dataframe(
             leaderboard_data[["RANK", "ID", "NAME", "CGPA"]],
             width="stretch",
