@@ -14,29 +14,35 @@ def line_chart():
     gpa_cols.sort(key=lambda x: x[0] == 'e')  # p comes before e
     gpa_df = data[["ID", "NAME"] + gpa_cols]
     gpa_df = gpa_df.dropna()
-    q = st.selectbox("Name or ID", gpa_df.ID.to_list() + gpa_df.NAME.to_list(),
-                    placeholder="Enter Name or ID", index=None)
+    q = st.multiselect("Name or ID", gpa_df.ID.to_list() + gpa_df.NAME.to_list(),
+                    placeholder="Enter Name or ID")
     if not q:
-        bro = gpa_df[gpa_cols].mean().round(2).reset_index()
-        bro.rename(columns={"index": "sem", 0: "gpa"}, inplace=True)
-        title = "Average GPAs"
+        bros = gpa_df[gpa_cols].mean().round(2).reset_index()
+        bros.rename(columns={"index": "sem", 0: "gpa"}, inplace=True)
+        fig = px.line(bros, x="sem", y="gpa", text="gpa", title="Average GPAs")
     else:
-        nameorid = "ID" if q.startswith("R20") else "NAME"
-        bro = gpa_df.loc[gpa_df[nameorid] == q, gpa_cols]
-        bro = bro.melt(var_name="sem", value_name="gpa")
-        title = "Your SGPAs"
-    bro['p_or_e'] = bro['sem'].str.slice(0, 1)
-    fig = px.line(bro, x="sem", y="gpa", text="gpa", title=title)
+        bros = gpa_df.loc[gpa_df["ID"].isin(q) | gpa_df["NAME"].isin(q)]
+        bros = bros.melt(id_vars=["ID", "NAME"],var_name="sem", value_name="gpa")
+        fig = px.line(bros, x="sem", y="gpa", color="NAME", text="gpa", title="")
     fig.update_traces(
+        mode="lines" if len(q) > 1 else "lines+markers+text",
         textposition="top left",
         hovertemplate="<extra></extra>%{y}",
     )
     fig.update_layout(
         dragmode=False,
-        showlegend=False,
+        showlegend=True,
         hovermode="x unified",
         hoverlabel={"font_size": 15},
-        yaxis_range=(3.5, 10.5)
+        yaxis_range=(3.5, 10.5),
+        height=600,
+        legend=dict(
+            orientation="h",
+            yanchor="bottom",
+            y=1.02,
+            xanchor="center",
+            x=0.5,
+        ),
     )
     st.plotly_chart(fig)
 
