@@ -4,11 +4,13 @@ from routes.insights import (
     name,
     dob,
     place,
-    leaderboard
+    leaderboard,
+    subjects,
 )
 
 attribute_module_map = {
     "Leaderboard": leaderboard,
+    "Subjects": subjects,
     "GPA": gpa,
     "Names": name,
     "Birthdays": dob,
